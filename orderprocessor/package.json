@@ -16,5 +16,12 @@
     "googleapis": "^27.0.0",
     "mocha": "^6.0.2",
     "xero-node": "^3.0.17"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.12.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "prettier": "^1.16.4"
   }
 }
