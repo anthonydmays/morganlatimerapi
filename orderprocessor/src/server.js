@@ -17,30 +17,30 @@ const gapiClient = new GapiClient();
 gapiClient.authorize();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/status', (req, res) => {
   res.send('Running...');
 });
 
 app.post('/orders', async (req, res) => {
-   const order = req.body;
+  const order = req.body;
 
-   const accounting = new Accounting(new XeroClient(xeroConfig));
-   await accounting.send(order);
+  const accounting = new Accounting(new XeroClient(xeroConfig));
+  await accounting.send(order);
 
-   await gapiClient.authorize();
+  await gapiClient.authorize();
 
-   const calendaring = new Calendaring(gapiClient);
-   await calendaring.book(order);
+  const calendaring = new Calendaring(gapiClient);
+  await calendaring.book(order);
 
-   res.send('OK');
+  res.send('OK');
 });
 
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-   console.log(`Server listening on port ${PORT}...`);
+  console.log(`Server listening on port ${PORT}...`);
 });
 // [END app]
 

@@ -6,7 +6,9 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node src/server.js",
-    "test": "mocha test/*.test.js --timeout=20000"
+    "test": "mocha test/*.test.js --timeout=20000",
+    "lint": "eslint .",
+    "fix": "eslint . --fix"
   },
   "author": "Anthony D. Mays",
   "license": "ISC",
