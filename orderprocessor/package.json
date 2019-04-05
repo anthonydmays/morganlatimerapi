@@ -1,0 +1,20 @@
+{
+  "name": "orderprocessor",
+  "version": "1.0.0",
+  "description": "Order post-processor API for morganlatimer.com",
+  "main": "src/server.js",
+  "scripts": {
+    "deploy": "gcloud app deploy",
+    "start": "node src/server.js",
+    "test": "mocha test/*.test.js --timeout=20000"
+  },
+  "author": "Anthony D. Mays",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/nodejs-repo-tools": "^3.2.0",
+    "express": "^4.16.4",
+    "googleapis": "^27.0.0",
+    "mocha": "^6.0.2",
+    "xero-node": "^3.0.17"
+  }
+}

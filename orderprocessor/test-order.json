@@ -1,0 +1,83 @@
+{
+  "id":883,
+  "number":"883",
+  "status":"processing",
+  "status_previous":"",
+  "date":"2019-04-04T20:13:29+00:00",
+  "total":"0.00",
+  "subtotal":"0.00",
+  "currency":"USD",
+  "currency_symbol":"$",
+  "transaction_id":"",
+  "view_url":"https://morganlatimer.com/my-account/view-order/883/",
+  "user_id":1,
+  "billing_first_name":"Anthony",
+  "billing_last_name":"Mays",
+  "billing_company":"",
+  "billing_address":"Anthony Mays",
+  "billing_email":"mays.anthony@gmail.com",
+  "billing_phone":"",
+  "billing_address_1":"",
+  "billing_address_2":"",
+  "billing_city":"",
+  "billing_postcode":"",
+  "billing_country":"US",
+  "billing_country_name":"United States (US)",
+  "billing_state":"",
+  "billing_state_name":"",
+  "shipping_first_name":"",
+  "shipping_last_name":"",
+  "shipping_company":"",
+  "shipping_address":"",
+  "shipping_address_1":"",
+  "shipping_address_2":"",
+  "shipping_city":"",
+  "shipping_postcode":"",
+  "shipping_country":"",
+  "shipping_country_name":"",
+  "shipping_state":"",
+  "shipping_state_name":"",
+  "shipping_method":"",
+  "payment_method":"",
+  "discount_total":"",
+  "cart_discount":"0.00",
+  "tax_total":"0.00",
+  "shipping_total":"0.00",
+  "shipping_tax":"0.00",
+  "prices_include_tax":false,
+  "customer_note":"",
+  "line_items":[
+    {
+      "name":"Test Product - Tuesday, April 9, 2019 @ 5PM PST",
+      "quantity":1,
+      "product_id":878,
+      "variation_id":879,
+      "sku":"CG20190000",
+      "categories":"Coaching Services",
+      "tags":false,
+      "type":"variation",
+      "unit_price":"0.00",
+      "line_subtotal":"0.00",
+      "line_total":"0.00",
+      "line_tax":"0.00",
+      "line_subtotal_tax":"0.00",
+      "tax_class":"",
+      "item_meta":{
+        "upcoming-sessions":"Tuesday, April 9, 2019 @ 5PM PST",
+        "_reduced_stock":"1"
+      }
+    }
+  ],
+  "coupons":"",
+  "item_count":1,
+  "has_downloadable_item":false,
+  "downloadable_files":[
+
+  ],
+  "notes":[
+
+  ],
+  "meta_data":{
+    "count_items":"0"
+  }
+}
