@@ -1,0 +1,7 @@
+{
+  "clientId": "Q01g0DLpGv3Z70IBsQOO6Ps98kmVeOrGeu8RCF4smrc226Cy2H",
+  "clientSecret": "Cqs3S0zOGGlzMb1uTVCfaO8DApzXCZLTo87UBtrM",
+  "environment": "sandbox",
+  "redirectUri": "http://www.morganlatimer.com:8080/intuit_callback",
+  "logging": true
+}

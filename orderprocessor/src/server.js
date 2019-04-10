@@ -3,18 +3,16 @@
 // [START app]
 const express = require('express');
 const bodyParser = require('body-parser');
-const XeroClient = require('xero-node').AccountingAPIClient;
 
 const {GapiClient} = require('./gapi-client');
+const {IntuitClient} = require('./intuit-client');
 const {Accounting} = require('./accounting');
 const {Calendaring} = require('./calendaring');
-
-const xeroConfig = require('../xero_config.json');
-
-const app = express();
 const gapiClient = new GapiClient();
+const intuitClient = new IntuitClient();
 
 gapiClient.authorize();
+console.log(`Intuit auth url:\n`, intuitClient.authorize());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -26,7 +24,7 @@ app.get('/status', (req, res) => {
 app.post('/orders', async (req, res) => {
   const order = req.body;
 
-  const accounting = new Accounting(new XeroClient(xeroConfig));
+  const accounting = new Accounting(intuitClient);
   await accounting.send(order);
 
   await gapiClient.authorize();
