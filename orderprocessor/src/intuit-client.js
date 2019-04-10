@@ -40,12 +40,12 @@ class IntuitClient {
   async createCustomer(customer) {
     const qbo = this.getClient();
     const createCustomer = promisify(qbo.createCustomer).bind(qbo);
-    const response = await createCustomer({
+    const newCustomer = await createCustomer({
        GivenName: customer.firstName,
        FamilyName: customer.lastName,
        PrimaryEmailAddr: {Address: customer.email},
     });
-    return this.mapCustomer(response.Customer);
+    return this.mapCustomer(newCustomer);
   };
 
   async getInvoice(order_number) {
@@ -92,8 +92,8 @@ class IntuitClient {
         }
       })),
     };
-    const response = await createInvoice(invoice);
-    return response.Invoice;
+    const invoice = await createInvoice(invoice);
+    return invoice;
   }
 
   async maybeRefreshToken() {
