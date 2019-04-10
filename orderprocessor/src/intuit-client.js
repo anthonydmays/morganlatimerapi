@@ -32,7 +32,8 @@ class IntuitClient {
     const response = await findCustomers({
        PrimaryEmailAddr: email,
     });
-    const customer = response.QueryResponse.Customer[0];
+    const customer = response.QueryResponse.Customer &&
+        response.QueryResponse.Customer[0];
     return this.mapCustomer(customer);
   }
 
@@ -44,8 +45,7 @@ class IntuitClient {
        FamilyName: customer.lastName,
        PrimaryEmailAddr: {Address: customer.email},
     });
-    const customer = response.Response.Customer[0];
-    return this.mapCustomer(customer);
+    return this.mapCustomer(response.Customer);
   };
 
   async getInvoice(order_number) {
@@ -54,7 +54,8 @@ class IntuitClient {
     const response = await findInvoices({
        DocNumber: String(order_number),
     });
-    const invoice = response.QueryResponse.Invoice[0];
+    const invoice = response.QueryResponse.Invoice &&
+        response.QueryResponse.Invoice[0];
     return invoice;
   }
 
@@ -91,8 +92,8 @@ class IntuitClient {
         }
       })),
     };
-     const response = await createInvoice(invoice);
-     console.log(response);
+    const response = await createInvoice(invoice);
+    return response.Invoice;
   }
 
   async maybeRefreshToken() {
