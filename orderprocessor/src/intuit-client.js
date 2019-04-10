@@ -114,7 +114,7 @@ class IntuitClient {
            false,
            '' + this.oAuthClient.token.realmId,
            config.environment === "sandbox",
-           true,
+           config.debug,
            34,
            '2.0',
            this.oAuthClient.token.refresh_token);

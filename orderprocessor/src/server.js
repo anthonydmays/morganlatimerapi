@@ -8,6 +8,8 @@ const {GapiClient} = require('./gapi-client');
 const {IntuitClient} = require('./intuit-client');
 const {Accounting} = require('./accounting');
 const {Calendaring} = require('./calendaring');
+
+const app = express();
 const gapiClient = new GapiClient();
 const intuitClient = new IntuitClient();
 
