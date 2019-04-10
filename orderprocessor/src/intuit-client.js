@@ -1,7 +1,7 @@
 const OAuthClient = require('intuit-oauth');
 const QuickBooks = require('node-quickbooks');
 const {promisify} = require('util');
-const config = require('../intuit_config.json');
+const config = require('../intuit_config.prod.json');
 
 class IntuitClient {
   constructor() {
@@ -113,7 +113,7 @@ class IntuitClient {
            this.oAuthClient.token.access_token,
            false,
            '' + this.oAuthClient.token.realmId,
-           true,
+           config.environment === "sandbox",
            true,
            34,
            '2.0',
