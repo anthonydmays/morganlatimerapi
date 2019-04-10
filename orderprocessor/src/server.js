@@ -21,6 +21,11 @@ app.get('/status', (req, res) => {
   res.send('Running...');
 });
 
+app.get('/intuit_callback', async (req, res) => {
+  const response = await intuitClient.fetchToken(req.url);
+  res.send(response);
+});
+
 app.post('/orders', async (req, res) => {
   const order = req.body;
 
