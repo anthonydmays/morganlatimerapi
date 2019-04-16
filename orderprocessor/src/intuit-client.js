@@ -80,6 +80,7 @@ class IntuitClient {
       BillEmail: {Address: customer.email},
       DocNumber: order.number,
       TrackingNum: order.transaction_id,
+      TxnDate: order.date,
       DueDate: order.date,
       Line: order.line_items.map((line_item, i) => ({
         LineNum: i + 1,
@@ -92,8 +93,8 @@ class IntuitClient {
         }
       })),
     };
-    const invoice = await createInvoice(invoice);
-    return invoice;
+    const newInvoice = await createInvoice(invoice);
+    return newInvoice;
   }
 
   async maybeRefreshToken() {

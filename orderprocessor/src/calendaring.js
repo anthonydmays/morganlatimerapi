@@ -41,7 +41,7 @@ class Calendaring {
     }
 
     const event = listResponse.data.items[0];
-    if (event.attendees.find(
+    if (event.attendees && event.attendees.find(
         (attendee) => attendee.email.toLowerCase() == email)) {
       console.log(`Customer ${userId} already invited to event ${event.id}`);
       return;
