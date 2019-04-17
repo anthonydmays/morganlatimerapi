@@ -26,7 +26,19 @@ class IntuitClient {
     }
   }
 
+  async maybeRefreshToken() {
+    if (!this.oAuthClient.isAccessTokenValid()) {
+      try {
+        const authResponse = await this.oAuthClient.refresh();
+        console.log(JSON.stringify(authResponse.getJson(), null, 2));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
   async getCustomer(email) {
+    await this.maybeRefreshToken();
     const qbo = this.getClient();
     const findCustomers = promisify(qbo.findCustomers).bind(qbo);
     const response = await findCustomers({
@@ -38,6 +50,7 @@ class IntuitClient {
   }
 
   async createCustomer(customer) {
+    await this.maybeRefreshToken();
     const qbo = this.getClient();
     const createCustomer = promisify(qbo.createCustomer).bind(qbo);
     const newCustomer = await createCustomer({
@@ -49,6 +62,7 @@ class IntuitClient {
   };
 
   async getInvoice(order_number) {
+    await this.maybeRefreshToken();
     const qbo = this.getClient();
     const findInvoices = promisify(qbo.findInvoices).bind(qbo);
     const response = await findInvoices({
@@ -70,6 +84,7 @@ class IntuitClient {
   }
 
   async createInvoice(order, customer) {
+    await this.maybeRefreshToken();
     const qbo = this.getClient();
     const createInvoice = promisify(qbo.createInvoice).bind(qbo);
     const invoice = {
@@ -95,17 +110,6 @@ class IntuitClient {
     };
     const newInvoice = await createInvoice(invoice);
     return newInvoice;
-  }
-
-  async maybeRefreshToken() {
-    if (!this.oAuthClient.isAccessTokenValid()) {
-      try {
-        const authResponse = await this.oAuthClient.refresh();
-        console.log(JSON.stringify(authResponse.getJson(), null, 2));
-      } catch (e) {
-        console.error(e);
-      }
-    }
   }
 
   getClient() {
