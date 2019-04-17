@@ -27,13 +27,14 @@ class IntuitClient {
   }
 
   async maybeRefreshToken() {
-    if (!this.oAuthClient.isAccessTokenValid()) {
-      try {
-        const authResponse = await this.oAuthClient.refresh();
-        console.log(JSON.stringify(authResponse.getJson(), null, 2));
-      } catch (e) {
-        console.error(e);
-      }
+    if (this.oAuthClient.isAccessTokenValid()) {
+      return;
+    }
+    try {
+      const authResponse = await this.oAuthClient.refresh();
+      console.log(JSON.stringify(authResponse.getJson(), null, 2));
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -42,7 +43,7 @@ class IntuitClient {
     const qbo = this.getClient();
     const findCustomers = promisify(qbo.findCustomers).bind(qbo);
     const response = await findCustomers({
-       PrimaryEmailAddr: email,
+      PrimaryEmailAddr: email,
     });
     const customer = response.QueryResponse.Customer &&
         response.QueryResponse.Customer[0];
@@ -54,9 +55,9 @@ class IntuitClient {
     const qbo = this.getClient();
     const createCustomer = promisify(qbo.createCustomer).bind(qbo);
     const newCustomer = await createCustomer({
-       GivenName: customer.firstName,
-       FamilyName: customer.lastName,
-       PrimaryEmailAddr: {Address: customer.email},
+      GivenName: customer.firstName,
+      FamilyName: customer.lastName,
+      PrimaryEmailAddr: {Address: customer.email},
     });
     return this.mapCustomer(newCustomer);
   };
@@ -66,7 +67,7 @@ class IntuitClient {
     const qbo = this.getClient();
     const findInvoices = promisify(qbo.findInvoices).bind(qbo);
     const response = await findInvoices({
-       DocNumber: String(order_number),
+      DocNumber: String(order_number),
     });
     const invoice = response.QueryResponse.Invoice &&
         response.QueryResponse.Invoice[0];
@@ -75,11 +76,11 @@ class IntuitClient {
 
   mapCustomer(customer) {
     return customer ? {
-       id: customer.Id,
-       firstName: customer.GivenName,
-       lastName: customer.FamilyName,
-       email: customer.PrimaryEmailAddr.Address,
-       ref: customer,
+      id: customer.Id,
+      firstName: customer.GivenName,
+      lastName: customer.FamilyName,
+      email: customer.PrimaryEmailAddr.Address,
+      ref: customer,
     } : null;
   }
 
@@ -89,8 +90,8 @@ class IntuitClient {
     const createInvoice = promisify(qbo.createInvoice).bind(qbo);
     const invoice = {
       CustomerRef: {
-         value: customer.ref.Id,
-         name: customer.ref.DisplayName,
+        value: customer.ref.Id,
+        name: customer.ref.DisplayName,
       },
       BillEmail: {Address: customer.email},
       DocNumber: order.number,
@@ -103,9 +104,9 @@ class IntuitClient {
         DetailType: 'SalesItemLineDetail',
         Amount: Number(line_item.line_total),
         SalesItemLineDetail: {
-           Qty: Number(line_item.quantity),
-           UnitPrice: Number(line_item.unit_price),
-        }
+          Qty: Number(line_item.quantity),
+          UnitPrice: Number(line_item.unit_price),
+        },
       })),
     };
     const newInvoice = await createInvoice(invoice);
@@ -113,17 +114,17 @@ class IntuitClient {
   }
 
   getClient() {
-     return new QuickBooks(
-           config.clientId,
-           config.clientSecret,
-           this.oAuthClient.token.access_token,
-           false,
-           '' + this.oAuthClient.token.realmId,
-           config.environment === "sandbox",
-           config.debug,
-           34,
-           '2.0',
-           this.oAuthClient.token.refresh_token);
+    return new QuickBooks(
+        config.clientId,
+        config.clientSecret,
+        this.oAuthClient.token.access_token,
+        false,
+        '' + this.oAuthClient.token.realmId,
+        config.environment === 'sandbox',
+        config.debug,
+        34,
+        '2.0',
+        this.oAuthClient.token.refresh_token);
   }
 }
 
