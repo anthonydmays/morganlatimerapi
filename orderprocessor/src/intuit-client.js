@@ -10,7 +10,7 @@ class IntuitClient {
 
   authorize() {
     return this.oAuthClient.authorizeUri({
-      scope: [OAuthClient.scopes.Accounting],
+      scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],
       state: 'morganlatimerapi',
     });
   }
