@@ -7,10 +7,10 @@ class IntuitClient {
   constructor() {
     this.oAuthClient = new OAuthClient(config);
     if (IntuitClient.refreshHandle) {
-       return;
+      return;
     }
     IntuitClient.refreshHandle = setInterval(() => {
-       this.refreshToken();
+      this.refreshToken();
     }, TOKEN_REFRESH_INTERVAL_MS);
     console.log(IntuitClient.refreshHandle);
   }
@@ -35,8 +35,8 @@ class IntuitClient {
 
   async refreshToken() {
     if (!this.oAuthClient.isAccessTokenValid()) {
-       console.warn('Waiting for valid Intuit token for refresh...');
-       return;
+      console.warn('Waiting for valid Intuit token for refresh...');
+      return;
     }
     try {
       const authResponse = await this.oAuthClient.refresh();
