@@ -12,7 +12,6 @@ class IntuitClient {
     IntuitClient.refreshHandle = setInterval(() => {
       this.refreshToken();
     }, TOKEN_REFRESH_INTERVAL_MS);
-    console.log(IntuitClient.refreshHandle);
   }
 
   authorize() {
@@ -38,6 +37,7 @@ class IntuitClient {
       console.warn('Waiting for valid Intuit token for refresh...');
       return;
     }
+    console.log('Refreshing Intuit token...');
     try {
       const authResponse = await this.oAuthClient.refresh();
       console.log(JSON.stringify(authResponse.getJson(), null, 2));
