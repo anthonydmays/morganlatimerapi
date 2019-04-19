@@ -6,6 +6,13 @@ const config = require('../intuit_config.prod.json');
 class IntuitClient {
   constructor() {
     this.oAuthClient = new OAuthClient(config);
+    if (IntuitClient.refreshHandle) {
+       return;
+    }
+    IntuitClient.refreshHandle = setInterval(() => {
+       this.refreshToken();
+    }, TOKEN_REFRESH_INTERVAL_MS);
+    console.log(IntuitClient.refreshHandle);
   }
 
   authorize() {
@@ -26,9 +33,10 @@ class IntuitClient {
     }
   }
 
-  async maybeRefreshToken() {
-    if (this.oAuthClient.isAccessTokenValid()) {
-      return;
+  async refreshToken() {
+    if (!this.oAuthClient.isAccessTokenValid()) {
+       console.warn('Waiting for valid Intuit token for refresh...');
+       return;
     }
     try {
       const authResponse = await this.oAuthClient.refresh();
@@ -39,7 +47,6 @@ class IntuitClient {
   }
 
   async getCustomer(email) {
-    await this.maybeRefreshToken();
     const qbo = this.getClient();
     const findCustomers = promisify(qbo.findCustomers).bind(qbo);
     const response = await findCustomers({
@@ -51,7 +58,6 @@ class IntuitClient {
   }
 
   async createCustomer(customer) {
-    await this.maybeRefreshToken();
     const qbo = this.getClient();
     const createCustomer = promisify(qbo.createCustomer).bind(qbo);
     const newCustomer = await createCustomer({
@@ -63,7 +69,6 @@ class IntuitClient {
   };
 
   async getInvoice(order_number) {
-    await this.maybeRefreshToken();
     const qbo = this.getClient();
     const findInvoices = promisify(qbo.findInvoices).bind(qbo);
     const response = await findInvoices({
@@ -85,7 +90,6 @@ class IntuitClient {
   }
 
   async createInvoice(order, customer) {
-    await this.maybeRefreshToken();
     const qbo = this.getClient();
     const createInvoice = promisify(qbo.createInvoice).bind(qbo);
     const invoice = {
@@ -127,6 +131,13 @@ class IntuitClient {
         this.oAuthClient.token.refresh_token);
   }
 }
+
+/**
+ * Interval at which to refresh auth token (default 30 minutes).
+ *
+ * @type {number}
+ */
+const TOKEN_REFRESH_INTERVAL_MS = 1000 * 60 * 30;
 
 module.exports = {
   IntuitClient,
