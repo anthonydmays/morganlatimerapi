@@ -6,12 +6,7 @@ const config = require('../intuit_config.prod.json');
 class IntuitClient {
   constructor() {
     this.oAuthClient = new OAuthClient(config);
-    if (IntuitClient.refreshHandle) {
-      return;
-    }
-    IntuitClient.refreshHandle = setInterval(() => {
-      this.refreshToken();
-    }, TOKEN_REFRESH_INTERVAL_MS);
+    this.authorized = false;
   }
 
   authorize() {
@@ -24,6 +19,7 @@ class IntuitClient {
   async fetchToken(url) {
     try {
       const authResponse = await this.oAuthClient.createToken(url);
+      this.authorized = true;
       console.log(JSON.stringify(authResponse.getJson(), null, 2));
       return 'Success.';
     } catch (e) {
@@ -32,18 +28,24 @@ class IntuitClient {
     }
   }
 
-  async refreshToken() {
-    if (!this.oAuthClient.isAccessTokenValid()) {
-      console.warn('Waiting for valid Intuit token for refresh...');
-      return;
+  async maybeRefreshToken() {
+    if (!this.authorized) {
+      console.error('Intuit API access not authorized. Please grant access.');
+      return false;
+    }
+    if (this.oAuthClient.isAccessTokenValid()) {
+      console.log('Intuit access token valid.');
+      return true;
     }
     console.log('Refreshing Intuit token...');
     try {
       const authResponse = await this.oAuthClient.refresh();
       console.log(JSON.stringify(authResponse.getJson(), null, 2));
+      return true;
     } catch (e) {
       console.error(e);
     }
+    return false;
   }
 
   async getCustomer(email) {
@@ -131,13 +133,6 @@ class IntuitClient {
         this.oAuthClient.token.refresh_token);
   }
 }
-
-/**
- * Interval at which to refresh auth token (default 30 minutes).
- *
- * @type {number}
- */
-const TOKEN_REFRESH_INTERVAL_MS = 1000 * 60 * 30;
 
 module.exports = {
   IntuitClient,

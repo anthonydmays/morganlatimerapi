@@ -7,6 +7,11 @@ class Accounting {
 
   async send(order) {
     try {
+      const authorized = await this.client.maybeRefreshToken();
+      if (!authorized) {
+        console.error('Cannot send order to accounting. Not authorized.');
+        return;
+      }
       const email =
             order.billing_email && order.billing_email.toLowerCase() || '';
       let customer = await this.client.getCustomer(email);
