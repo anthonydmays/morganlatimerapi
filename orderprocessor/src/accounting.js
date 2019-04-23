@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Facade for accounting system responsible for creating new customers and
+ * invoices.
+ */
 class Accounting {
   constructor( client ) {
     this.client = client;
