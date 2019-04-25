@@ -11,9 +11,11 @@ class Accounting {
 
   async send(order) {
     try {
+      const orderId = order.id;
       const authorized = await this.client.maybeRefreshToken();
       if (!authorized) {
-        console.error('Cannot send order to accounting. Not authorized.');
+        console.error(
+            `Cannot send order ${orderId} to accounting. Not authorized.`);
         return;
       }
       const email =
@@ -32,11 +34,9 @@ class Accounting {
         invoice = await this.client.createInvoice(order, customer);
       }
 
-      console.log(
-          `Created invoice ${invoice.Id} for order ${order.id}.`);
+      console.log(`Created invoice ${invoice.Id} for order ${orderId}.`);
     } catch (e) {
-      console.log(
-          `Failed to create invoice for order ${order.id}.`);
+      console.log(`Failed to create invoice for order ${order.id}.`);
       console.log(e.Fault ? e.Fault.Error[0] : e);
     }
   }
