@@ -72,13 +72,13 @@ export class IntuitClient implements AccountingClient {
       PrimaryEmailAddr: {Address: customer.email},
     });
     return this.mapCustomer(newCustomer);
-  };
+  }
 
-  async getInvoice(order_number: number): Promise<any> {
+  async getInvoice(orderNumber: number): Promise<any> {
     const qbo = this.getClient();
     const findInvoices = promisify(qbo.findInvoices).bind(qbo);
     const response = await findInvoices({
-      DocNumber: String(order_number),
+      DocNumber: String(orderNumber),
     });
     const invoice = response.QueryResponse.Invoice &&
         response.QueryResponse.Invoice[0];
@@ -98,14 +98,14 @@ export class IntuitClient implements AccountingClient {
       TrackingNum: order.transaction_id,
       TxnDate: order.date,
       DueDate: order.date,
-      Line: order.line_items.map((line_item: any, i: number) => ({
+      Line: order.line_items.map((lineItem: any, i: number) => ({
         LineNum: i + 1,
-        Description: line_item.name,
+        Description: lineItem.name,
         DetailType: 'SalesItemLineDetail',
-        Amount: Number(line_item.line_total),
+        Amount: Number(lineItem.line_total),
         SalesItemLineDetail: {
-          Qty: Number(line_item.quantity),
-          UnitPrice: Number(line_item.unit_price),
+          Qty: Number(lineItem.quantity),
+          UnitPrice: Number(lineItem.unit_price),
         },
       })),
     };

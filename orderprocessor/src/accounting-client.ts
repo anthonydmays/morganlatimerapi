@@ -9,8 +9,8 @@ export interface AccountingClient {
 
 export interface Customer {
    id?: number;
-   firstName: string,
-   lastName: string,
-   email: string,
-   ref?: any,
+   firstName: string;
+   lastName: string;
+   email: string;
+   ref?: any;
 }

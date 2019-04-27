@@ -93,13 +93,12 @@ class IntuitClient {
             return this.mapCustomer(newCustomer);
         });
     }
-    ;
-    getInvoice(order_number) {
+    getInvoice(orderNumber) {
         return __awaiter(this, void 0, void 0, function* () {
             const qbo = this.getClient();
             const findInvoices = util_1.promisify(qbo.findInvoices).bind(qbo);
             const response = yield findInvoices({
-                DocNumber: String(order_number),
+                DocNumber: String(orderNumber),
             });
             const invoice = response.QueryResponse.Invoice &&
                 response.QueryResponse.Invoice[0];
@@ -120,14 +119,14 @@ class IntuitClient {
                 TrackingNum: order.transaction_id,
                 TxnDate: order.date,
                 DueDate: order.date,
-                Line: order.line_items.map((line_item, i) => ({
+                Line: order.line_items.map((lineItem, i) => ({
                     LineNum: i + 1,
-                    Description: line_item.name,
+                    Description: lineItem.name,
                     DetailType: 'SalesItemLineDetail',
-                    Amount: Number(line_item.line_total),
+                    Amount: Number(lineItem.line_total),
                     SalesItemLineDetail: {
-                        Qty: Number(line_item.quantity),
-                        UnitPrice: Number(line_item.unit_price),
+                        Qty: Number(lineItem.quantity),
+                        UnitPrice: Number(lineItem.unit_price),
                     },
                 })),
             };

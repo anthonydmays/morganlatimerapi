@@ -27,8 +27,8 @@ class GapiClient {
         this.authPromise = null;
     }
     /**
-      * Create an OAuth2 client with the given credentials.
-      */
+     * Create an OAuth2 client with the given credentials.
+     */
     authorize() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.authPromise) {
@@ -51,8 +51,8 @@ class GapiClient {
         });
     }
     /**
-      * Get and store new token after prompting for user authorization.
-      */
+     * Get and store new token after prompting for user authorization.
+     */
     getAccessToken(resolve, reject) {
         if (!this.auth)
             return;

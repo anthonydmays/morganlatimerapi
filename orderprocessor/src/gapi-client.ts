@@ -11,8 +11,8 @@ export class GapiClient {
   constructor() {}
 
   /**
-    * Create an OAuth2 client with the given credentials.
-    */
+   * Create an OAuth2 client with the given credentials.
+   */
   async authorize() {
     if (this.authPromise) {
       return this.authPromise;
@@ -36,8 +36,8 @@ export class GapiClient {
   }
 
   /**
-    * Get and store new token after prompting for user authorization.
-    */
+   * Get and store new token after prompting for user authorization.
+   */
   getAccessToken(resolve: Function, reject: Function) {
     if (!this.auth) return;
     const authUrl = this.auth.generateAuthUrl({
