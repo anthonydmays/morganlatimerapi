@@ -1,6 +1,3 @@
-'use strict';
-
-// [START app]
 import express from 'express';
 import bodyParser from 'body-parser';
 
@@ -47,7 +44,3 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });
-// [END app]
-
-module.exports = app;
-
