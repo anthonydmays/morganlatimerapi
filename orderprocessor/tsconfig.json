@@ -6,7 +6,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "inlineSourceMap": true,
     "esModuleInterop": true,
     "checkJs": true,
     "allowUnreachableCode": false,

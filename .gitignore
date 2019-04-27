@@ -1,1 +1,5 @@
 *.swp
+**/coverage/**
+orderprocessor/log/
+**/.nyc_output/**
+**/.cache/**
