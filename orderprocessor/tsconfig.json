@@ -4,6 +4,7 @@
     "allowJs": true,
     "module": "commonjs",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "sourceMap": true,
     "esModuleInterop": true,
     "checkJs": true,
@@ -24,6 +25,7 @@
     "outDir": "./bin",
     "baseUrl": ".",
     "typeRoots": [
+       "./types",
        "./node_modules/@types"
     ],
     "paths": {
@@ -34,5 +36,8 @@
   },
   "include": [
       "./src/**/*"
+  ],
+  "exclude": [
+      "./types"
   ]
 }

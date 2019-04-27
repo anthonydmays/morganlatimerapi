@@ -10,6 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
@@ -17,9 +24,11 @@ const accounting_1 = require("./accounting");
 const calendaring_1 = require("./calendaring");
 const gapi_client_1 = require("./gapi-client");
 const intuit_client_1 = require("./intuit-client");
+const intuit_oauth_1 = __importDefault(require("intuit-oauth"));
+const intuitConfig = __importStar(require("../intuit_config.prod.json"));
 const app = express_1.default();
 const gapiClient = new gapi_client_1.GapiClient();
-const intuitClient = new intuit_client_1.IntuitClient();
+const intuitClient = new intuit_client_1.IntuitClient(new intuit_oauth_1.default(intuitConfig));
 gapiClient.authorize();
 console.log(`Intuit auth url:\n`, intuitClient.authorize());
 app.use(body_parser_1.default.json());

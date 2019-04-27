@@ -23,9 +23,9 @@ const node_quickbooks_1 = __importDefault(require("node-quickbooks"));
 const util_1 = require("util");
 const config = __importStar(require("../intuit_config.prod.json"));
 class IntuitClient {
-    constructor() {
+    constructor(oAuthClient) {
+        this.oAuthClient = oAuthClient;
         this.authorized = false;
-        this.oAuthClient = new intuit_oauth_1.default(config);
     }
     authorize() {
         return this.oAuthClient.authorizeUri({

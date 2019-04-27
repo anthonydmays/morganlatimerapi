@@ -5,10 +5,12 @@ import {Accounting} from './accounting';
 import {Calendaring} from './calendaring';
 import {GapiClient} from './gapi-client';
 import {IntuitClient} from './intuit-client';
+import OAuthClient from 'intuit-oauth';
+import * as intuitConfig from '../intuit_config.prod.json';
 
 const app = express();
 const gapiClient = new GapiClient();
-const intuitClient = new IntuitClient();
+const intuitClient = new IntuitClient(new OAuthClient(intuitConfig));
 
 gapiClient.authorize();
 console.log(`Intuit auth url:\n`, intuitClient.authorize());

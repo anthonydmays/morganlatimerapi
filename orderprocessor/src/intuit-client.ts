@@ -6,12 +6,9 @@ import {AccountingClient, Customer} from './accounting-client';
 import * as config from '../intuit_config.prod.json';
 
 export class IntuitClient implements AccountingClient {
-   private readonly oAuthClient: OAuthClient;
    private authorized = false;
 
-  constructor() {
-    this.oAuthClient = new OAuthClient(config);
-  }
+  constructor(private readonly oAuthClient: OAuthClient) {}
 
   authorize() {
     return this.oAuthClient.authorizeUri({
