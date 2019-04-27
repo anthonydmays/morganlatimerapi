@@ -1,4 +1,4 @@
-describe('server', () => {
+describe('IntuitClient', () => {
   it('does something', () => {
   });
 });
