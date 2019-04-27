@@ -7,10 +7,34 @@
     "deploy": "tsc --resolveJsonModule && gcloud app deploy",
     "start": "node bin/src/server.js",
     "test": "jasmine-ts --config=jasmine.json",
-    "testWithCoverage": "nyc -r lcov -e .ts -x \"*.test.ts\" jasmine-ts --config=jasmine.json && nyc report",
+    "test:coverage": "nyc jasmine --config=jasmine.json",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "fix": "eslint . --fix",
     "build": "tsc --resolveJsonModule -w"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.test.ts",
+      "**/*.mock.ts",
+      "**/*.d.ts",
+      "tests/**/*.*"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "reporter": [
+      "text"
+    ],
+    "require": [
+      "ts-node/register",
+      "source-map-support/register"
+    ],
+    "sourceMap": true,
+    "cache": false,
+    "all": false
   },
   "author": "Anthony D. Mays",
   "license": "ISC",

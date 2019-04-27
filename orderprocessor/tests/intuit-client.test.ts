@@ -7,12 +7,27 @@ describe('IntuitClient', () => {
   let instance: IntuitClient;
 
   beforeEach(() => {
-    oAuthClient = spyOnClass(OAuthClient);
+    oAuthClient = spyOnClass(OAuthClient) as jasmine.SpyObj<OAuthClient>;
     instance = new IntuitClient(oAuthClient);
   });
 
-  it('does something', () => {
+  it('calls auth correctly', () => {
     instance.authorize();
-    expect(oAuthClient.authorizeUri).toHaveBeenCalled();
+    expect(oAuthClient.authorizeUri).toHaveBeenCalledWith({
+      scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],
+      state: 'morganlatimerapi',
+    });
+  });
+
+  it('creates token', async () => {
+    oAuthClient.createToken.and.returnValue(Promise.resolve({
+      getJson: () => ({}),
+    }));
+    await instance.fetchToken('abc/123');
+    expect(oAuthClient.createToken).toHaveBeenCalledWith('abc/123');
+  });
+
+  it('refreshes token', async () => {
+    await instance.maybeRefreshToken();
   });
 });

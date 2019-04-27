@@ -6,7 +6,7 @@ import {AccountingClient, Customer} from './accounting-client';
 import * as config from '../intuit_config.prod.json';
 
 export class IntuitClient implements AccountingClient {
-   private authorized = false;
+  private authorized = false;
 
   constructor(private readonly oAuthClient: OAuthClient) {}
 
