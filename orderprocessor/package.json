@@ -35,7 +35,7 @@
     ],
     "sourceMap": true,
     "cache": false,
-    "all": false
+    "all": true
   },
   "author": "Anthony D. Mays",
   "license": "ISC",

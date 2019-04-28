@@ -73,7 +73,6 @@ class IntuitClient {
         return __awaiter(this, void 0, void 0, function* () {
             const qbo = this.getClient();
             const findCustomers = util_1.promisify(qbo.findCustomers).bind(qbo);
-            console.log('Finding customers');
             const response = yield findCustomers({
                 PrimaryEmailAddr: email,
             });

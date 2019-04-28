@@ -16,6 +16,8 @@ describe('IntuitClient', () => {
   let instance: IntuitClient;
 
   beforeEach(() => {
+    spyOn(console, 'log');
+    spyOn(console, 'error');
     oAuthClient = spyOnClass(OAuthClient) as jasmine.SpyObj<OAuthClient>;
     instance = new mocked.IntuitClient(oAuthClient);
   });
@@ -29,9 +31,9 @@ describe('IntuitClient', () => {
   });
 
   it('creates token', async () => {
-    oAuthClient.createToken.and.callFake((_: string) => {
-      return Promise.resolve({});
-    });
+    oAuthClient.createToken.and.returnValue(Promise.resolve({
+      getJson: () => ({}),
+    }));
     await instance.fetchToken('abc/123');
     expect(oAuthClient.createToken).toHaveBeenCalledWith('abc/123');
   });
@@ -67,10 +69,93 @@ describe('IntuitClient', () => {
   });
 
   it('retrieves customers', async () => {
-    mockQuickBooks.findCustomers.and.callFake((value, callback) => {
-      callback();
+    const customerRef = {
+      Id: 1234,
+      GivenName: 'Anthony',
+      FamilyName: 'Mays',
+      PrimaryEmailAddr: {Address: 'anthony@mays.com'},
+    };
+    mockQuickBooks.findCustomers.and.callFake((req: any, callback: any) => {
+      expect(req).toEqual({PrimaryEmailAddr: 'test@test.test'});
+      callback(undefined, {
+        QueryResponse: {
+          Customer: [customerRef],
+        },
+      });
     });
     oAuthClient.token = {access_token: '', realmId: ''};
-    await instance.getCustomer('test@test.test');
+    const customer = await instance.getCustomer('test@test.test');
+    expect(customer).toEqual({
+      id: 1234,
+      firstName: 'Anthony',
+      lastName: 'Mays',
+      email: 'anthony@mays.com',
+      ref: customerRef,
+    });
+  });
+
+  it('creates customers', async () => {
+    const customerRef = {
+      GivenName: 'Anthony',
+      FamilyName: 'Mays',
+      PrimaryEmailAddr: {Address: 'anthony@mays.com'},
+    };
+    mockQuickBooks.createCustomer.and.callFake((req: any, callback: any) => {
+      expect(req).toEqual(customerRef);
+      callback(undefined, {
+        ...customerRef,
+        Id: 1234,
+      });
+    });
+    oAuthClient.token = {access_token: '', realmId: ''};
+    const customer = await instance.createCustomer({
+      firstName: 'Anthony',
+      lastName: 'Mays',
+      email: 'anthony@mays.com',
+    });
+    expect(customer).toEqual({
+      id: 1234,
+      firstName: 'Anthony',
+      lastName: 'Mays',
+      email: 'anthony@mays.com',
+      ref: {...customerRef, Id: 1234},
+    });
+  });
+
+  it('retrieves invoices', async () => {
+    mockQuickBooks.findInvoices.and.callFake((_: any, callback: any) => {
+      callback(undefined, {
+        QueryResponse: {
+          Invoice: [{Id: 4567}],
+        },
+      });
+    });
+    oAuthClient.token = {access_token: '', realmId: ''};
+    const invoice = await instance.getInvoice(5678);
+    expect(invoice).toEqual({
+      Id: 4567,
+    });
+  });
+
+  it('creates invoices', async () => {
+    mockQuickBooks.createInvoice.and.callFake((req: any, callback: any) => {
+      expect(req).toEqual(jasmine.objectContaining({DocNumber: 7890}));
+      callback(undefined, {DocNumber: 4567});
+    });
+    oAuthClient.token = {access_token: '', realmId: ''};
+    const customer = {
+      firstName: 'Anthony',
+      lastName: 'Mays',
+      email: 'test@test.test',
+      ref:{Id: 1234, name: 'Anthony Mays'}
+    };
+    const order = {
+      number: 7890,
+      line_items: [],
+    }
+    const invoice = await instance.createInvoice(order, customer);
+    expect(invoice).toEqual({
+      DocNumber: 4567,
+    });
   });
 });

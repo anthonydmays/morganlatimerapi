@@ -52,7 +52,6 @@ export class IntuitClient implements AccountingClient {
   async getCustomer(email: string): Promise<Customer|null> {
     const qbo = this.getClient();
     const findCustomers = promisify(qbo.findCustomers).bind(qbo);
-    console.log('Finding customers');
     const response = await findCustomers({
       PrimaryEmailAddr: email,
     });
