@@ -67,8 +67,10 @@ describe('IntuitClient', () => {
   });
 
   it('retrieves customers', async () => {
-    //mockQuickBooks.findCustomers.and.returnValue();
-    //oAuthClient.token = {access_token: '', realmId: ''};
-    //await instance.getCustomer('test@test.test');
+    mockQuickBooks.findCustomers.and.callFake((value, callback) => {
+      callback();
+    });
+    oAuthClient.token = {access_token: '', realmId: ''};
+    await instance.getCustomer('test@test.test');
   });
 });
