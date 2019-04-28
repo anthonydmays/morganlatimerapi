@@ -1,7 +1,8 @@
 import fs from 'fs';
-import readline from 'readline';
-import {google} from 'googleapis';
 import {OAuth2Client} from 'google-auth-library';
+import {google} from 'googleapis';
+import readline from 'readline';
+
 import * as config from '../gcal_config.json';
 
 export class GapiClient {
@@ -19,8 +20,8 @@ export class GapiClient {
     }
     this.authPromise = new Promise((resolve, reject) => {
       const {client_secret, client_id, redirect_uris} = config.installed;
-      this.auth = new google.auth.OAuth2(
-          client_id, client_secret, redirect_uris[0]);
+      this.auth =
+          new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
       // Check if we have previously stored a token.
       fs.readFile(TOKEN_PATH, (err, token) => {
@@ -39,15 +40,16 @@ export class GapiClient {
    * Get and store new token after prompting for user authorization.
    */
   getAccessToken(resolve: Function, reject: Function) {
-    if (!this.auth) return;
+    if (!this.auth)
+      return;
     const authUrl = this.auth.generateAuthUrl({
-      access_type: 'offline',
-      scope: SCOPES,
+      access_type : 'offline',
+      scope : SCOPES,
     });
     console.log('Authorize this app by visiting this url:\n', authUrl);
     const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
+      input : process.stdin,
+      output : process.stdout,
     });
     rl.question('Enter the code from that page here: ', (code) => {
       rl.close();
@@ -71,10 +73,10 @@ export class GapiClient {
       });
     });
   }
-}
+  }
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+const SCOPES = [ 'https://www.googleapis.com/auth/calendar' ];
 
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
