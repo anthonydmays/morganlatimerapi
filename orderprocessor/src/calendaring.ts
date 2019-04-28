@@ -64,7 +64,3 @@ export class Calendaring {
 
 const CALENDAR_ID =
     'morganlatimer.com_kpl73s5ioudnrjflmnulj6uhqo@group.calendar.google.com';
-
-module.exports = {
-  Calendaring,
-};
