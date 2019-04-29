@@ -4,6 +4,7 @@ r_github_packages:
   anthonydmays/morganlatimerapi/orderprocessor
 
 before_script:
+  cd orderprocessor/
   npm install
 
 script:
