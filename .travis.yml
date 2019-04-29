@@ -1,2 +1,10 @@
 language: node_js
-r_github_packages: anthonydmays/morganlatimerapi/orderprocessor
+
+r_github_packages:
+  anthonydmays/morganlatimerapi/orderprocessor
+
+before_script:
+  npm install
+
+script:
+  npm run test:coverage
