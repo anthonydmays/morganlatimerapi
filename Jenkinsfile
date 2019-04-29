@@ -5,16 +5,16 @@ pipeline {
   }
   stages {
     stage('Build') {
-      dir('orderprocessor') {
-        steps {
+      steps {
+        dir('orderprocessor') {
           sh 'npm install'
         }
       }
     }
     stage('Test') {
-      dir('orderprocessor') {
-        steps {
-          sh 'npm run test'
+      steps {
+        dir('orderprocessor') {
+          sh 'npm run test:coverage'
         }
       }
     }
