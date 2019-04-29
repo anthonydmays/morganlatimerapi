@@ -10,5 +10,4 @@ before_script:
   npm install
 
 script:
-  cd orderprocessor/
   npm run test:coverage
