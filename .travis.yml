@@ -1,1 +1,2 @@
 language: node_js
+r_github_packages: anthonydmays/morganlatimerapi/orderprocessor
