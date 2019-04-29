@@ -13,9 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * invoices.
  */
 class Accounting {
-    constructor(client) {
-        this.client = client;
-    }
+    constructor(client) { this.client = client; }
     send(order) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -52,7 +50,4 @@ class Accounting {
     }
 }
 exports.Accounting = Accounting;
-module.exports = {
-    Accounting,
-};
 //# sourceMappingURL=accounting.js.map

@@ -18,29 +18,29 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const express_1 = __importDefault(require("express"));
+const intuit_oauth_1 = __importDefault(require("intuit-oauth"));
+const intuitConfig = __importStar(require("../intuit_config.prod.json"));
 const accounting_1 = require("./accounting");
 const calendaring_1 = require("./calendaring");
 const gapi_client_1 = require("./gapi-client");
 const intuit_client_1 = require("./intuit-client");
-const intuit_oauth_1 = __importDefault(require("intuit-oauth"));
-const intuitConfig = __importStar(require("../intuit_config.prod.json"));
-const app = express_1.default();
+exports.app = express_1.default();
 const gapiClient = new gapi_client_1.GapiClient();
 const intuitClient = new intuit_client_1.IntuitClient(new intuit_oauth_1.default(intuitConfig));
 gapiClient.authorize();
 console.log(`Intuit auth url:\n`, intuitClient.authorize());
-app.use(body_parser_1.default.json());
-app.use(body_parser_1.default.urlencoded({ extended: true }));
-app.get('/status', (_, res) => {
+exports.app.use(body_parser_1.default.json());
+exports.app.use(body_parser_1.default.urlencoded({ extended: true }));
+exports.app.get('/status', (_, res) => {
     res.send('Running...');
 });
-app.get('/intuit_callback', (req, res) => __awaiter(this, void 0, void 0, function* () {
+exports.app.get('/intuit_callback', (req, res) => __awaiter(this, void 0, void 0, function* () {
     const response = yield intuitClient.fetchToken(req.url);
     res.send(response);
 }));
-app.post('/orders', (req, res) => __awaiter(this, void 0, void 0, function* () {
+exports.app.post('/orders', (req, res) => __awaiter(this, void 0, void 0, function* () {
     const order = req.body;
     const accounting = new accounting_1.Accounting(intuitClient);
     yield accounting.send(order);
@@ -51,7 +51,7 @@ app.post('/orders', (req, res) => __awaiter(this, void 0, void 0, function* () {
 }));
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+exports.app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}...`);
 });
 //# sourceMappingURL=server.js.map

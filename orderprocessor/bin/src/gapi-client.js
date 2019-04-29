@@ -19,8 +19,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
-const readline_1 = __importDefault(require("readline"));
 const googleapis_1 = require("googleapis");
+const readline_1 = __importDefault(require("readline"));
 const config = __importStar(require("../gcal_config.json"));
 class GapiClient {
     constructor() {
@@ -36,7 +36,8 @@ class GapiClient {
             }
             this.authPromise = new Promise((resolve, reject) => {
                 const { client_secret, client_id, redirect_uris } = config.installed;
-                this.auth = new googleapis_1.google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+                this.auth =
+                    new googleapis_1.google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
                 // Check if we have previously stored a token.
                 fs_1.default.readFile(TOKEN_PATH, (err, token) => {
                     if (err) {

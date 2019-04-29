@@ -76,8 +76,7 @@ class IntuitClient {
             const response = yield findCustomers({
                 PrimaryEmailAddr: email,
             });
-            const customer = response.QueryResponse.Customer &&
-                response.QueryResponse.Customer[0];
+            const customer = response.QueryResponse.Customer && response.QueryResponse.Customer[0];
             return this.mapCustomer(customer);
         });
     }
@@ -100,8 +99,7 @@ class IntuitClient {
             const response = yield findInvoices({
                 DocNumber: String(orderNumber),
             });
-            const invoice = response.QueryResponse.Invoice &&
-                response.QueryResponse.Invoice[0];
+            const invoice = response.QueryResponse.Invoice && response.QueryResponse.Invoice[0];
             return invoice;
         });
     }
@@ -141,7 +139,8 @@ class IntuitClient {
             lastName: customer.FamilyName,
             email: customer.PrimaryEmailAddr.Address,
             ref: customer,
-        } : null;
+        }
+            : null;
     }
     getClient() {
         return new node_quickbooks_1.default(config.clientId, config.clientSecret, this.oAuthClient.token.access_token, false, '' + this.oAuthClient.token.realmId, config.environment === 'sandbox', config.debug, 34, '2.0', this.oAuthClient.token.refresh_token);

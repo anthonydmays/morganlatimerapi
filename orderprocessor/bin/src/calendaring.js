@@ -19,8 +19,7 @@ class Calendaring {
     }
     book(order) {
         return __awaiter(this, void 0, void 0, function* () {
-            const email = order.billing_email && order.billing_email.toLowerCase() ||
-                '';
+            const email = order.billing_email && order.billing_email.toLowerCase() || '';
             for (const item of order.line_items) {
                 if (!item.sku || !item.sku.startsWith('CG')) {
                     console.log(`Calendaring skipping sku ${item.sku}`);
@@ -62,7 +61,4 @@ class Calendaring {
 }
 exports.Calendaring = Calendaring;
 const CALENDAR_ID = 'morganlatimer.com_kpl73s5ioudnrjflmnulj6uhqo@group.calendar.google.com';
-module.exports = {
-    Calendaring,
-};
 //# sourceMappingURL=calendaring.js.map
