@@ -18,7 +18,6 @@ pipeline {
   post {
     always {
       step([$class: 'CoberturaPublisher', coberturaReportFile: '**/cobertura-coverage.xml'])
-      recordIssues aggregatingResults: true, tools: [clang('**/*.ts'), codeAnalysis(), checkStyle()]
       cleanWs()
     }
 
