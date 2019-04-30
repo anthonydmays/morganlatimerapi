@@ -1,1 +1,1 @@
-[![Build Status](http://www.morganlatimer.com:8899/job/morganlatimerapi/job/master/badge/icon)](http://www.morganlatimer.com:8899/job/morganlatimerapi/job/master/)
+[![Build Status](http://www.morganlatimer.com:8899/buildStatus/icon?job=morganlatimerapi%2Fmaster)](http://www.morganlatimer.com:8899/job/morganlatimerapi/job/master/)
