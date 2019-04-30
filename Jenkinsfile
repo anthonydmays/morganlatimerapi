@@ -22,7 +22,7 @@ pipeline {
   post {
       always {
           steps {
-              [$class: 'CoberturaPublisher', coberturaReportFile: '**/cobertura-coverage.xml'])
+              [$class: 'CoberturaPublisher', coberturaReportFile: '**/cobertura-coverage.xml']
               publishCoverage adapters: [coberturaAdapter('orderprocessor/coverage/cobertura-coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE')
           }
       }
