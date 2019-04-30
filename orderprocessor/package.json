@@ -27,6 +27,7 @@
     ],
     "reporter": [
       "html",
+      "cobertura",
       "text"
     ],
     "require": [
