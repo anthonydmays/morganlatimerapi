@@ -6,23 +6,19 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        dir('orderprocessor') {
-          sh 'npm install'
-        }
+        sh 'npm install'
       }
     }
     stage('Test') {
       steps {
-        dir('orderprocessor') {
-          sh 'npm run test:coverage'
-        }
+        sh 'npm run test:coverage'
       }
     }
   }
   post {
       always {
           step([$class: 'CoberturaPublisher', coberturaReportFile: '**/cobertura-coverage.xml'])
-          publishCoverage adapters: [coberturaAdapter('orderprocessor/coverage/cobertura-coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE')
+          publishCoverage adapters: [coberturaAdapter('coverage/cobertura-coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE')
       }
   }
 }
