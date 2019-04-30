@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  environment {
+    CI = 'true'
+  }
   stages {
     stage('Build') {
       steps {
@@ -11,21 +14,12 @@ pipeline {
         sh 'npm run test:coverage'
       }
     }
-    stage('Post-process') {
-      steps {
-        cobertura(coberturaReportFile: 'coverage/cobertura-coverage.xml')
-      }
-    }
-  }
-  environment {
-    CI = 'true'
   }
   post {
     always {
       step([$class: 'CoberturaPublisher', coberturaReportFile: '**/cobertura-coverage.xml'])
-      publishCoverage(adapters: [coberturaAdapter('coverage/cobertura-coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE'))
+      recordIssues aggregatingResults: true, tools: [tsLint(), clang(), codeAnalysis(), checkStyle()]
       cleanWs()
-
     }
 
   }
