@@ -12,12 +12,6 @@ pipeline {
       }
     }
     stage('Post-process') {
-      agent {
-        node {
-          label '10'
-        }
-
-      }
       steps {
         cobertura(coberturaReportFile: 'coverage/cobertura-coverage.xml')
       }
