@@ -14,7 +14,8 @@ export class Accounting {
       const orderId = order.id;
       const authorized = await this.client.maybeRefreshToken();
       if (!authorized) {
-        console.error( `Cannot send order ${orderId} to accounting. Not authorized.`);
+        console.error(
+            `Cannot send order ${orderId} to accounting. Not authorized.`);
         return;
         }
       const email =
