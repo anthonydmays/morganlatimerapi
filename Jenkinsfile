@@ -17,7 +17,7 @@ pipeline {
   }
   post {
     always {
-      emailextrecipients([developers(), culprits(), requestor()])
+      emailext body: '$DEFAULT_CONTENT', subject: '$DEFAULT_SUBJECT', to: '$DEFAULT_RECIPIENTS'
       step([$class: 'CoberturaPublisher', coberturaReportFile: '**/cobertura-coverage.xml'])
       cleanWs()
     }
