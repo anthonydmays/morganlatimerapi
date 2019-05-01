@@ -7,6 +7,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -18,65 +45,69 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs_1 = __importDefault(require("fs"));
-const googleapis_1 = require("googleapis");
-const readline_1 = __importDefault(require("readline"));
-const config = __importStar(require("../gcal_config.json"));
-class GapiClient {
-    constructor() {
+var fs_1 = __importDefault(require("fs"));
+var googleapis_1 = require("googleapis");
+var readline_1 = __importDefault(require("readline"));
+var config = __importStar(require("../gcal_config.json"));
+var GapiClient = /** @class */ (function () {
+    function GapiClient() {
         this.authPromise = null;
     }
     /**
      * Create an OAuth2 client with the given credentials.
      */
-    authorize() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.authPromise) {
-                return this.authPromise;
-            }
-            this.authPromise = new Promise((resolve, reject) => {
-                const { client_secret, client_id, redirect_uris } = config.installed;
-                this.auth =
-                    new googleapis_1.google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-                // Check if we have previously stored a token.
-                fs_1.default.readFile(TOKEN_PATH, (err, token) => {
-                    if (err) {
-                        this.getAccessToken(resolve, reject);
-                        return;
-                    }
-                    this.auth.setCredentials(JSON.parse(String(token)));
-                    resolve();
+    GapiClient.prototype.authorize = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                if (this.authPromise) {
+                    return [2 /*return*/, this.authPromise];
+                }
+                this.authPromise = new Promise(function (resolve, reject) {
+                    var _a = config.installed, client_secret = _a.client_secret, client_id = _a.client_id, redirect_uris = _a.redirect_uris;
+                    _this.auth =
+                        new googleapis_1.google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+                    // Check if we have previously stored a token.
+                    fs_1.default.readFile(TOKEN_PATH, function (err, token) {
+                        if (err) {
+                            _this.getAccessToken(resolve, reject);
+                            return;
+                        }
+                        _this.auth.setCredentials(JSON.parse(String(token)));
+                        resolve();
+                    });
                 });
+                return [2 /*return*/, this.authPromise];
             });
-            return this.authPromise;
         });
-    }
+    };
     /**
      * Get and store new token after prompting for user authorization.
      */
-    getAccessToken(resolve, reject) {
+    GapiClient.prototype.getAccessToken = function (resolve, reject) {
+        var _this = this;
         if (!this.auth)
             return;
-        const authUrl = this.auth.generateAuthUrl({
+        var authUrl = this.auth.generateAuthUrl({
             access_type: 'offline',
             scope: SCOPES,
         });
         console.log('Authorize this app by visiting this url:\n', authUrl);
-        const rl = readline_1.default.createInterface({
+        var rl = readline_1.default.createInterface({
             input: process.stdin,
             output: process.stdout,
         });
-        rl.question('Enter the code from that page here: ', (code) => {
+        rl.question('Enter the code from that page here: ', function (code) {
             rl.close();
-            this.auth.getToken(code, (err, token) => {
+            _this.auth.getToken(code, function (err, token) {
                 if (err || !token) {
                     console.error('Error retrieving token.');
                     reject(err);
                     return;
                 }
-                this.auth.setCredentials(token);
+                _this.auth.setCredentials(token);
                 // Store the token to disk for later program executions
-                fs_1.default.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+                fs_1.default.writeFile(TOKEN_PATH, JSON.stringify(token), function (err) {
                     if (err) {
                         console.error('Token could not be saved.');
                         reject(err);
@@ -87,13 +118,14 @@ class GapiClient {
                 resolve();
             });
         });
-    }
-}
+    };
+    return GapiClient;
+}());
 exports.GapiClient = GapiClient;
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+var SCOPES = ['https://www.googleapis.com/auth/calendar'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = './gapi_token.json';
+var TOKEN_PATH = './gapi_token.json';
 //# sourceMappingURL=gapi-client.js.map

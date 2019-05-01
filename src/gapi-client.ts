@@ -40,8 +40,9 @@ export class GapiClient {
    * Get and store new token after prompting for user authorization.
    */
   getAccessToken(resolve: Function, reject: Function) {
-    if (!this.auth)
+    if (!this.auth) {
       return;
+    }
     const authUrl = this.auth.generateAuthUrl({
       access_type : 'offline',
       scope : SCOPES,

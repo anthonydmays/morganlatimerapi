@@ -4,13 +4,14 @@
   "description": "Order post-processor API for morganlatimer.com",
   "main": "bin/src/server.js",
   "scripts": {
+    "build": "tsc --resolveJsonModule -w",
     "deploy": "tsc --resolveJsonModule && gcloud app deploy",
+    "fix": "git-clang-format",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "precommit": "check-clang-format",
     "start": "node bin/src/server.js",
     "test": "jasmine-ts --config=jasmine.json",
-    "test:coverage": "nyc npm test",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "fix": "eslint . --fix",
-    "build": "tsc --resolveJsonModule -w"
+    "test:coverage": "nyc npm test"
   },
   "nyc": {
     "extension": [
