@@ -15,7 +15,9 @@ export class GapiClient {
    * Create an OAuth2 client with the given credentials.
    */
   async authorize() {
-    if (this.authPromise) { return this.authPromise; }
+    if (this.authPromise) {
+      return this.authPromise;
+    }
     this.authPromise = new Promise((resolve, reject) => {
       const {client_secret, client_id, redirect_uris} = config.installed;
       this.auth =
