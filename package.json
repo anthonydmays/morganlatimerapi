@@ -20,7 +20,6 @@
       "**/*.test.ts",
       "**/*.mock.ts",
       "**/*.d.ts",
-      "tests/**/*.*",
       "types",
       "node_modules"
     ],
