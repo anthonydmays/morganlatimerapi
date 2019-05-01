@@ -11,7 +11,7 @@ import {IntuitClient} from '../src/intuit-client';
 import express = require('express');
 import request = require('supertest');
 
-describe('server', () => {
+describe('Server', () => {
   let mockIntuitClient: IntuitClient;
   let mockGapiClient: GapiClient;
   let mockAccounting: Accounting;
