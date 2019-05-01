@@ -8,10 +8,15 @@
     "deploy": "tsc --resolveJsonModule && gcloud app deploy",
     "fix": "git-clang-format",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "pre-commit": "check-clang-format && npm run test:coverage",
     "start": "node bin/src/server.js",
     "test": "jasmine-ts --config=jasmine.json",
     "test:coverage": "nyc npm test"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run fix",
+      "pre-push": "npm run test:coverage"
+    }
   },
   "nyc": {
     "extension": [
