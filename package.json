@@ -7,7 +7,7 @@
     "deploy": "tsc --resolveJsonModule && gcloud app deploy",
     "start": "node bin/src/server.js",
     "test": "jasmine-ts --config=jasmine.json",
-    "test:coverage": "nyc jasmine --config=jasmine.json",
+    "test:coverage": "nyc npm test",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "fix": "eslint . --fix",
     "build": "tsc --resolveJsonModule -w"
@@ -20,7 +20,9 @@
       "**/*.test.ts",
       "**/*.mock.ts",
       "**/*.d.ts",
-      "tests/**/*.*"
+      "tests/**/*.*",
+      "types",
+      "node_modules"
     ],
     "include": [
       "src/**/*.ts"
@@ -31,7 +33,6 @@
       "text"
     ],
     "require": [
-      "ts-node/register",
       "source-map-support/register"
     ],
     "sourceMap": true,
@@ -65,6 +66,9 @@
     "jasmine": "^3.4.0",
     "jasmine-core": "^3.4.0",
     "jasmine-es6-spies": "0.0.4",
+    "jasmine-junit-reporter": "0.0.2",
+    "jasmine-reporters": "^2.3.2",
+    "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.3.0",
     "karma": "^4.1.0",
     "karma-chrome-launcher": "^2.2.0",

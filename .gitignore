@@ -3,3 +3,4 @@
 orderprocessor/log/
 **/.nyc_output/**
 **/.cache/**
+junit_report.xml
