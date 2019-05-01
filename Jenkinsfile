@@ -18,6 +18,7 @@ pipeline {
   post {
     always {
       emailext body: '$DEFAULT_CONTENT', subject: '$DEFAULT_SUBJECT', to: '$DEFAULT_RECIPIENTS'
+      publishHTML([reportDir: 'coverage/', reportName: 'HTML Report'])
       step([$class: 'CoberturaPublisher', coberturaReportFile: '**/cobertura-coverage.xml'])
       cleanWs()
     }
