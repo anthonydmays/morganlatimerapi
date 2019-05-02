@@ -21,13 +21,12 @@ describe('Accounting', () => {
     instance = new Accounting(<AccountingClient>mockAccountingClient);
   });
 
-  it('does not send orders when not authorized', async() => {
+  it('does not send orders when not authorized', async () => {
     mockAccountingClient.maybeRefreshToken.and.returnValue(
         Promise.resolve(false));
     await instance.send(testOrder);
     expect(console.error)
         .toHaveBeenCalledWith(
             'Cannot send order 883 to accounting. Not authorized.');
-    expect(mockAccountingClient.createInvoice).not.toHaveBeenCalled();
   });
 });
