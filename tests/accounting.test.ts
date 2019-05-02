@@ -1,7 +1,7 @@
 import {Accounting} from '../src/accounting';
 import {AccountingClient} from '../src/accounting-client';
 
-import * as testOrder from '../test-order.json';
+import * as testOrder from './test-order.json';
 
 describe('Accounting', () => {
   let mockAccountingClient: jasmine.SpyObj<AccountingClient>;
