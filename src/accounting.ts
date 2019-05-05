@@ -9,7 +9,7 @@ export class Accounting {
 
   constructor(client: AccountingClient) {
     this.client = client;
-    }
+  }
 
   async send(order: any) {
     try {
@@ -36,9 +36,9 @@ export class Accounting {
         return;
         }
 
-      let invoice = await this.client.getInvoice(order.number);
-      if (!invoice) {
-        invoice = await this.client.createInvoice(order, customer);
+        let invoice = await this.client.getInvoice(order.number);
+        if (!invoice) {
+          invoice = await this.client.createInvoice(order, customer);
       }
 
       console.log(`Created invoice ${invoice.Id} for order ${orderId}.`);

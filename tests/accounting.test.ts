@@ -1,15 +1,15 @@
 import {Accounting} from '../src/accounting';
 import {AccountingClient} from '../src/accounting-client';
 
-import * as testOrder from './test-order.json';
-
 describe('Accounting', () => {
   let mockAccountingClient: jasmine.SpyObj<AccountingClient>;
   let instance: Accounting;
+  let testOrder: any;
 
   beforeEach(() => {
     spyOn(console, 'log');
     spyOn(console, 'error');
+    testOrder = require('./test-order.json');
     mockAccountingClient = jasmine.createSpyObj('AccountingClient', [
       'authorize',
       'getCustomer',
@@ -94,10 +94,22 @@ describe('Accounting', () => {
   it('reports error when customer not found', async() => {
     mockAccountingClient.maybeRefreshToken.and.returnValue(
         Promise.resolve(true));
+    testOrder.billing_email = null;
     await instance.send(testOrder);
     expect(console.error)
         .toHaveBeenCalledWith('Customer 1 could not be created.');
     expect(mockAccountingClient.getInvoice).not.toHaveBeenCalled();
     expect(mockAccountingClient.createInvoice).not.toHaveBeenCalled();
+  });
+
+  it('reports service fault', async() => {
+    const err = {Fault: {Error: ['Some error']}};
+    mockAccountingClient.maybeRefreshToken.and.callFake(() => {
+      throw err;
+    });
+    await instance.send(testOrder);
+    expect(console.error)
+        .toHaveBeenCalledWith(
+            'Failed to create invoice for order 883.', 'Some error');
   });
 });
