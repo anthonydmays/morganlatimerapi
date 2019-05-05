@@ -16,6 +16,7 @@ describe('Server', () => {
   let mockGapiClient: GapiClient;
   let mockAccounting: Accounting;
   let mockCalendaring: Calendaring;
+  let mockExpress: Express;
   let app: Express;
 
   beforeEach(() => {
@@ -26,8 +27,8 @@ describe('Server', () => {
     mockGapiClient = spyOnClass(GapiClient);
     mockAccounting = spyOnClass(Accounting);
     mockCalendaring = spyOnClass(Calendaring);
+    mockExpress = express();
 
-    const mockExpress = express();
     spyOn(mockExpress, 'listen').and.callFake(() => spyOnClass(Server));
 
     const mocked = proxyquire.noCallThru().load('../src/server', {
@@ -62,6 +63,13 @@ describe('Server', () => {
   it('initializes correctly', async() => {
     expect(mockGapiClient.authorize).toHaveBeenCalled();
     expect(mockIntuitClient.authorize).toHaveBeenCalled();
+    expect(mockExpress.listen).toHaveBeenCalled();
+
+    // Invoke listen callback.
+    (mockExpress.listen as jasmine.Spy).calls.allArgs()[0][1]();
+
+    expect(console.log)
+        .toHaveBeenCalledWith('Server listening on port 8080...');
   });
 
   it('reports status', async() => {
