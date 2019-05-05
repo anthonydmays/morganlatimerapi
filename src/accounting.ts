@@ -7,7 +7,9 @@ import {AccountingClient} from './accounting-client';
 export class Accounting {
   private readonly client: AccountingClient;
 
-  constructor(client: AccountingClient) { this.client = client; }
+  constructor(client: AccountingClient) {
+    this.client = client;
+    }
 
   async send(order: any) {
     try {
@@ -24,8 +26,8 @@ export class Accounting {
       if (!customer) {
         customer = await this.client.createCustomer({
           email,
-          firstName : order.billing_first_name,
-          lastName : order.billing_last_name,
+          firstName: order.billing_first_name,
+          lastName: order.billing_last_name,
         });
         }
 
@@ -34,15 +36,16 @@ export class Accounting {
         return;
         }
 
-      let invoice = await this.client.getInvoice(order.order_number);
+      let invoice = await this.client.getInvoice(order.number);
       if (!invoice) {
         invoice = await this.client.createInvoice(order, customer);
       }
 
       console.log(`Created invoice ${invoice.Id} for order ${orderId}.`);
     } catch (e) {
-      console.log(`Failed to create invoice for order ${order.id}.`);
-      console.log(e.Fault ? e.Fault.Error[0] : e);
+      console.error(
+          `Failed to create invoice for order ${order.id}.`,
+          e.Fault ? e.Fault.Error[0] : e);
     }
   }
 }
