@@ -86,8 +86,9 @@ var GapiClient = /** @class */ (function () {
      */
     GapiClient.prototype.getAccessToken = function (resolve, reject) {
         var _this = this;
-        if (!this.auth)
+        if (!this.auth) {
             return;
+        }
         var authUrl = this.auth.generateAuthUrl({
             access_type: 'offline',
             scope: SCOPES,

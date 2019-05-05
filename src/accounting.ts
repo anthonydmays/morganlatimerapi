@@ -39,7 +39,7 @@ export class Accounting {
         let invoice = await this.client.getInvoice(order.number);
         if (!invoice) {
           invoice = await this.client.createInvoice(order, customer);
-      }
+        }
 
       console.log(`Created invoice ${invoice.Id} for order ${orderId}.`);
     } catch (e) {

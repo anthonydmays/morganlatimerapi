@@ -102,7 +102,7 @@ describe('Accounting', () => {
     expect(mockAccountingClient.createInvoice).not.toHaveBeenCalled();
   });
 
-  it('reports service fault', async() => {
+  it('reports service fault', async () => {
     const err = {Fault: {Error: ['Some error']}};
     mockAccountingClient.maybeRefreshToken.and.callFake(() => {
       throw err;
