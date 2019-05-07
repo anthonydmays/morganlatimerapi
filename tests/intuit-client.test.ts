@@ -155,7 +155,7 @@ describe('IntuitClient', () => {
     const order = {
       number: 7890,
       line_items: [],
-    }
+    };
     const invoice = await instance.createInvoice(order, customer);
     expect(invoice).toEqual({
       DocNumber: 4567,

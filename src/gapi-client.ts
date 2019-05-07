@@ -21,7 +21,7 @@ export class GapiClient {
     }
     this.authPromise = this.doAuth();
     return this.authPromise;
-    }
+  }
 
   async doAuth() {
     const {client_secret, client_id, redirect_uris} = config.installed;
@@ -60,7 +60,7 @@ export class GapiClient {
     await writeFile(TOKEN_PATH, JSON.stringify(token));
     console.log('Token saved.');
   }
-  }
+}
 
 function questionAsync(message: string): Promise<string> {
   return new Promise((resolve) => {
@@ -73,7 +73,7 @@ function questionAsync(message: string): Promise<string> {
       resolve(result);
     });
   });
-  }
+}
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];

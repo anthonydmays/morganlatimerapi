@@ -44,7 +44,7 @@ describe('GapiClient', () => {
     instance = new mocked.GapiClient();
   });
 
-  it('initializes gapi with existing token', async() => {
+  it('initializes gapi with existing token', async () => {
     fs.readFile.and.callFake((path: string, callback: Function) => {
       expect(path).toEqual('./gapi_token.json');
       callback(undefined, '12345');
@@ -65,7 +65,7 @@ describe('GapiClient', () => {
     expect(mockOAuth2ClientConstructor).not.toHaveBeenCalled();
   });
 
-  it('prompts for auth token if not existing', async() => {
+  it('prompts for auth token if not existing', async () => {
     fs.readFile.and.callFake((path: string, callback: Function) => {
       expect(path).toEqual('./gapi_token.json');
       callback('blah');
@@ -99,7 +99,7 @@ describe('GapiClient', () => {
     });
   });
 
-  it('errors when token cannot be retrieved', async() => {
+  it('errors when token cannot be retrieved', async () => {
     fs.readFile.and.callFake((_: string, callback: Function) => {
       callback('blah');
     });
@@ -121,7 +121,7 @@ describe('GapiClient', () => {
     expect(error).toEqual(expectedError);
   });
 
-  it('does not error if token cannot be saved', async() => {
+  it('does not error if token cannot be saved', async () => {
     fs.readFile.and.callFake((_: string, callback: Function) => {
       callback('blah');
     });
@@ -149,7 +149,7 @@ describe('GapiClient', () => {
 class FS {
   readFile(_path: string, _callback: Function) {}
   writeFile(_path: string, _content: string, _callback: Function) {}
-  }
+}
 
 class Readline {
   question(_message: string, _callback: Function) {}
