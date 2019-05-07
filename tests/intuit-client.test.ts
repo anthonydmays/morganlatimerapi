@@ -7,8 +7,10 @@ import {IntuitClient} from '../src/intuit-client';
 
 const mockQuickBooks = spyOnClass(QuickBooks);
 const mocked = proxyquire.noCallThru().load('../src/intuit-client', {
-  'node-quickbooks' : function() { return mockQuickBooks; },
-  '../intuit_config.prod.json' : {},
+  'node-quickbooks': function() {
+    return mockQuickBooks;
+  },
+  '../intuit_config.prod.json': {},
 });
 
 describe('IntuitClient', () => {
@@ -25,14 +27,14 @@ describe('IntuitClient', () => {
   it('calls auth correctly', () => {
     instance.authorize();
     expect(oAuthClient.authorizeUri).toHaveBeenCalledWith({
-      scope : [ OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId ],
-      state : 'morganlatimerapi',
+      scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],
+      state: 'morganlatimerapi',
     });
   });
 
   it('creates token', async() => {
     oAuthClient.createToken.and.returnValue(Promise.resolve({
-      getJson : () => ({}),
+      getJson: () => ({}),
     }));
     await instance.fetchToken('abc/123');
     expect(oAuthClient.createToken).toHaveBeenCalledWith('abc/123');
@@ -40,7 +42,7 @@ describe('IntuitClient', () => {
 
   it('does not refresh when already authed', async() => {
     oAuthClient.createToken.and.returnValue(Promise.resolve({
-      getJson : () => ({}),
+      getJson: () => ({}),
     }));
     oAuthClient.isAccessTokenValid.and.returnValue(true);
     await instance.fetchToken('abc/123');
@@ -57,10 +59,10 @@ describe('IntuitClient', () => {
 
   it('refreshes auth when expired', async() => {
     oAuthClient.createToken.and.returnValue(Promise.resolve({
-      getJson : () => ({}),
+      getJson: () => ({}),
     }));
     oAuthClient.refresh.and.returnValue(Promise.resolve({
-      getJson : () => ({}),
+      getJson: () => ({}),
     }));
     oAuthClient.isAccessTokenValid.and.returnValue(false);
     await instance.fetchToken('abc/123');
@@ -70,92 +72,93 @@ describe('IntuitClient', () => {
 
   it('retrieves customers', async() => {
     const customerRef = {
-      Id : 1234,
-      GivenName : 'Anthony',
-      FamilyName : 'Mays',
-      PrimaryEmailAddr : {Address : 'anthony@mays.com'},
+      Id: 1234,
+      GivenName: 'Anthony',
+      FamilyName: 'Mays',
+      PrimaryEmailAddr: {Address: 'anthony@mays.com'},
     };
-    mockQuickBooks.findCustomers.and.callFake((req: any, callback: any) => {
-      expect(req).toEqual({PrimaryEmailAddr : 'test@test.test'});
-      callback(undefined, {
-        QueryResponse : {
-          Customer : [ customerRef ],
-        },
-      });
-    });
-    oAuthClient.token = {access_token : '', realmId : ''};
+    mockQuickBooks.findCustomers.and.callFake(
+        (req: any, callback: Function) => {
+          expect(req).toEqual({PrimaryEmailAddr: 'test@test.test'});
+          callback(undefined, {
+            QueryResponse: {
+              Customer: [customerRef],
+            },
+          });
+        });
+    oAuthClient.token = {access_token: '', realmId: ''};
     const customer = await instance.getCustomer('test@test.test');
     expect(customer).toEqual({
-      id : 1234,
-      firstName : 'Anthony',
-      lastName : 'Mays',
-      email : 'anthony@mays.com',
-      ref : customerRef,
+      id: 1234,
+      firstName: 'Anthony',
+      lastName: 'Mays',
+      email: 'anthony@mays.com',
+      ref: customerRef,
     });
   });
 
   it('creates customers', async() => {
     const customerRef = {
-      GivenName : 'Anthony',
-      FamilyName : 'Mays',
-      PrimaryEmailAddr : {Address : 'anthony@mays.com'},
+      GivenName: 'Anthony',
+      FamilyName: 'Mays',
+      PrimaryEmailAddr: {Address: 'anthony@mays.com'},
     };
     mockQuickBooks.createCustomer.and.callFake((req: any, callback: any) => {
       expect(req).toEqual(customerRef);
       callback(undefined, {
         ...customerRef,
-        Id : 1234,
+        Id: 1234,
       });
     });
-    oAuthClient.token = {access_token : '', realmId : ''};
+    oAuthClient.token = {access_token: '', realmId: ''};
     const customer = await instance.createCustomer({
-      firstName : 'Anthony',
-      lastName : 'Mays',
-      email : 'anthony@mays.com',
+      firstName: 'Anthony',
+      lastName: 'Mays',
+      email: 'anthony@mays.com',
     });
     expect(customer).toEqual({
-      id : 1234,
-      firstName : 'Anthony',
-      lastName : 'Mays',
-      email : 'anthony@mays.com',
-      ref : {...customerRef, Id : 1234},
+      id: 1234,
+      firstName: 'Anthony',
+      lastName: 'Mays',
+      email: 'anthony@mays.com',
+      ref: {...customerRef, Id: 1234},
     });
   });
 
   it('retrieves invoices', async() => {
     mockQuickBooks.findInvoices.and.callFake((_: any, callback: any) => {
       callback(undefined, {
-        QueryResponse : {
-          Invoice : [ {Id : 4567} ],
+        QueryResponse: {
+          Invoice: [{Id: 4567}],
         },
       });
     });
-    oAuthClient.token = {access_token : '', realmId : ''};
+    oAuthClient.token = {access_token: '', realmId: ''};
     const invoice = await instance.getInvoice(5678);
     expect(invoice).toEqual({
-      Id : 4567,
+      Id: 4567,
     });
   });
 
   it('creates invoices', async() => {
     mockQuickBooks.createInvoice.and.callFake((req: any, callback: any) => {
-      expect(req).toEqual(jasmine.objectContaining({DocNumber : 7890}));
-      callback(undefined, {DocNumber : 4567});
+      expect(req).toEqual(jasmine.objectContaining({DocNumber: 7890}));
+      callback(undefined, {DocNumber: 4567});
     });
-    oAuthClient.token = {access_token : '', realmId : ''};
+    oAuthClient.token = {access_token: '', realmId: ''};
     const customer = {
-      firstName : 'Anthony',
-      lastName : 'Mays',
-      email : 'test@test.test',
-      ref : {Id : 1234, name : 'Anthony Mays'}
+      firstName: 'Anthony',
+      lastName: 'Mays',
+      email: 'test@test.test',
+      ref: {Id: 1234, name: 'Anthony Mays'}
     };
     const order = {
-      number : 7890,
-      line_items : [],
+      number: 7890,
+      line_items: [],
     }
     const invoice = await instance.createInvoice(order, customer);
     expect(invoice).toEqual({
-      DocNumber : 4567,
+      DocNumber: 4567,
     });
   });
 });
