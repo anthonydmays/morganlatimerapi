@@ -52,8 +52,8 @@ var Calendaring = /** @class */ (function () {
                 for (_i = 0, _a = order.line_items; _i < _a.length; _i++) {
                     item = _a[_i];
                     if (!item.sku || !item.sku.startsWith('CG')) {
-                        console.log("Calendaring skipping sku " + item.sku + ".");
-                        continue;
+                      console.log('Calendaring skipping sku ' + item.sku + '.');
+                      continue;
                     }
                     this.addCustomerToEligibleEvent(item.sku, order.user_id, email);
                 }
@@ -69,7 +69,9 @@ var Calendaring = /** @class */ (function () {
                     case 0:
                         listEvents = util_1.promisify(this.calendar.events.list);
                         skuId = "#" + sku;
-                        console.log("Searching for event with sku " + skuId + " for customer " + userId + ".");
+                        console.log(
+                            'Searching for event with sku ' + skuId +
+                            ' for customer ' + userId + '.');
                         return [4 /*yield*/, listEvents({
                                 calendarId: CALENDAR_ID,
                                 q: skuId,
@@ -83,8 +85,10 @@ var Calendaring = /** @class */ (function () {
                         event = listResponse.data.items[0];
                         event.attendees = event.attendees || [];
                         if (event.attendees.find(function (attendee) { return attendee.email.toLowerCase() === email; })) {
-                            console.log("Customer " + userId + " already invited to event " + event.id + ".");
-                            return [2 /*return*/];
+                          console.log(
+                              'Customer ' + userId +
+                              ' already invited to event ' + event.id + '.');
+                          return [2 /*return*/];
                         }
                         event.attendees.push({ email: email });
                         updateEvent = util_1.promisify(this.calendar.events.update);
@@ -95,7 +99,9 @@ var Calendaring = /** @class */ (function () {
                             })];
                     case 2:
                         _a.sent();
-                        console.log("Customer " + userId + " added to event " + event.id + ".");
+                        console.log(
+                            'Customer ' + userId + ' added to event ' +
+                            event.id + '.');
                         return [2 /*return*/];
                 }
             });

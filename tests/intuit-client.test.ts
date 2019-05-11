@@ -36,8 +36,17 @@ describe('IntuitClient', () => {
     oAuthClient.createToken.and.returnValue(Promise.resolve({
       getJson: () => ({}),
     }));
-    await instance.fetchToken('abc/123');
+    const result = await instance.fetchToken('abc/123');
     expect(oAuthClient.createToken).toHaveBeenCalledWith('abc/123');
+    expect(result).toBe('Success.');
+  });
+
+  it('handles token creation error gracefully', async() => {
+    oAuthClient.createToken.and.returnValue(Promise.reject({
+      error: 'No token for you.',
+    }));
+    const result = await instance.fetchToken('abc/123');
+    expect(result).toBe('Failed to fetch token.');
   });
 
   it('does not refresh when already authed', async() => {
@@ -70,6 +79,19 @@ describe('IntuitClient', () => {
     expect(result).toBe(true);
   });
 
+  it('handles refresh errors', async() => {
+    oAuthClient.createToken.and.returnValue(Promise.resolve({
+      getJson: () => ({}),
+    }));
+    oAuthClient.refresh.and.returnValue(Promise.reject({
+      error: 'Cause I wanted to.',
+    }));
+    oAuthClient.isAccessTokenValid.and.returnValue(false);
+    await instance.fetchToken('abc/123');
+    const result = await instance.maybeRefreshToken();
+    expect(result).toBe(false);
+  });
+
   it('retrieves customers', async() => {
     const customerRef = {
       Id: 1234,
@@ -95,6 +117,16 @@ describe('IntuitClient', () => {
       email: 'anthony@mays.com',
       ref: customerRef,
     });
+  });
+
+  it('retrieves no customer if none found', async() => {
+    oAuthClient.token = {access_token: '', realmId: ''};
+    mockQuickBooks.findCustomers.and.callFake(
+        (_req: any, callback: Function) => {
+          callback(undefined, {QueryResponse: {Customer: []}});
+        });
+    const customer = await instance.getCustomer('test@test.test');
+    expect(customer).toBe(null);
   });
 
   it('creates customers', async() => {
@@ -154,7 +186,10 @@ describe('IntuitClient', () => {
     };
     const order = {
       number: 7890,
-      line_items: [],
+      line_items: [
+        {name: 'Coaching call', line_total: 20, quantity: 2, unit_price: 10},
+        {name: 'Resume review', line_total: 25, quantity: 3, unit_price: 8.3},
+      ],
     };
     const invoice = await instance.createInvoice(order, customer);
     expect(invoice).toEqual({
