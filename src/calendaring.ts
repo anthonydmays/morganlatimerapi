@@ -29,7 +29,8 @@ export class Calendaring {
     const listEvents = promisify(this.calendar.events.list);
 
     const skuId = `#${sku}`;
-    console.log(`Searching for event with sku ${skuId} for customer ${userId}.`);
+    console.log(
+        `Searching for event with sku ${skuId} for customer ${userId}.`);
 
     const listResponse = await listEvents({
       calendarId: CALENDAR_ID,

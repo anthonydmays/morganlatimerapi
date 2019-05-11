@@ -76,9 +76,7 @@ var Accounting = /** @class */ (function () {
                             console.error("Customer " + order.user_id + " could not be created.");
                             return [2 /*return*/];
                         }
-                        return [
-                          4 /*yield*/, this.client.getInvoice(order.number)
-                        ];
+                        return [4 /*yield*/, this.client.getInvoice(order.number)];
                     case 5:
                         invoice = _a.sent();
                         if (!!invoice) return [3 /*break*/, 7];
@@ -91,10 +89,7 @@ var Accounting = /** @class */ (function () {
                         return [3 /*break*/, 9];
                     case 8:
                         e_1 = _a.sent();
-                        console.error(
-                            'Failed to create invoice for order ' + order.id +
-                                '.',
-                            e_1.Fault ? e_1.Fault.Error[0] : e_1);
+                        console.error("Failed to create invoice for order " + order.id + ".", e_1.Fault ? e_1.Fault.Error[0] : e_1);
                         return [3 /*break*/, 9];
                     case 9: return [2 /*return*/];
                 }

@@ -40,7 +40,7 @@ describe('Calendaring', () => {
     });
   });
 
-  it('does not book customers for ineligible skus', async() => {
+  it('does not book customers for ineligible skus', async () => {
     await instance.book({
       user_id: 5667,
       line_items: [{sku: '12345'}],
@@ -49,7 +49,7 @@ describe('Calendaring', () => {
     expect(console.log).toHaveBeenCalledWith('Calendaring skipping sku 12345.');
   });
 
-  it('does not book customers already booked', async() => {
+  it('does not book customers already booked', async () => {
     const expectedCalendarId =
         'morganlatimer.com_kpl73s5ioudnrjflmnulj6uhqo@group.calendar.google.com';
     const fakeApiResponse = {
@@ -80,7 +80,7 @@ describe('Calendaring', () => {
     expect(mockCalendarApi.events.update).not.toHaveBeenCalled();
   });
 
-  it('warns when event not found', async() => {
+  it('warns when event not found', async () => {
     const fakeApiResponse = {
       data: {
         items: [],
@@ -99,7 +99,7 @@ describe('Calendaring', () => {
         .toHaveBeenCalledWith('Event not found for sku #CG12345.');
   });
 
-  it('books customers successfully', async() => {
+  it('books customers successfully', async () => {
     const expectedCalendarId =
         'morganlatimer.com_kpl73s5ioudnrjflmnulj6uhqo@group.calendar.google.com';
     const fakeApiResponse = {
