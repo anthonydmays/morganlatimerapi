@@ -24,12 +24,12 @@ export class IntuitClient implements AccountingClient {
       return '';
     } catch (e) {
       console.log('Failed to retrieve saved token. Getting auth url.');
-      }
+    }
     return this.oAuthClient.authorizeUri({
       scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],
       state: 'morganlatimerapi',
     });
-    }
+  }
 
   async fetchToken(url: string): Promise<string> {
     try {
@@ -154,7 +154,7 @@ export class IntuitClient implements AccountingClient {
       console.log('Failed to save Intuit token.', e);
     }
   }
-  }
+}
 
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
