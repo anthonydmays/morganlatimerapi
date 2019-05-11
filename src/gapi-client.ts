@@ -7,7 +7,10 @@ import {promisify} from 'util';
 import * as config from '../gcal_config.json';
 
 export class GapiClient {
-  auth!: OAuth2Client;
+  private _auth?: OAuth2Client;
+  get auth(): OAuth2Client {
+    return this._auth!;
+  }
   private authPromise: Promise<void>|null = null;
 
   constructor() {}
@@ -25,7 +28,7 @@ export class GapiClient {
 
   async doAuth() {
     const {client_secret, client_id, redirect_uris} = config.installed;
-    this.auth =
+    this._auth =
         new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
     // Check if we have previously stored a token.

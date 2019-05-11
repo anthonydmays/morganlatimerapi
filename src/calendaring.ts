@@ -18,7 +18,7 @@ export class Calendaring {
         order.billing_email && order.billing_email.toLowerCase() || '';
     for (const item of order.line_items) {
       if (!item.sku || !item.sku.startsWith('CG')) {
-        console.log(`Calendaring skipping sku ${item.sku}`);
+        console.log(`Calendaring skipping sku ${item.sku}.`);
         continue;
       }
       this.addCustomerToEligibleEvent(item.sku, order.user_id, email);
@@ -29,7 +29,7 @@ export class Calendaring {
     const listEvents = promisify(this.calendar.events.list);
 
     const skuId = `#${sku}`;
-    console.log(`Searching for event with sku ${skuId} for customer ${userId}`);
+    console.log(`Searching for event with sku ${skuId} for customer ${userId}.`);
 
     const listResponse = await listEvents({
       calendarId: CALENDAR_ID,
@@ -45,7 +45,7 @@ export class Calendaring {
     event.attendees = event.attendees || [];
     if (event.attendees.find(
             (attendee: any) => attendee.email.toLowerCase() === email)) {
-      console.log(`Customer ${userId} already invited to event ${event.id}`);
+      console.log(`Customer ${userId} already invited to event ${event.id}.`);
       return;
     }
 
@@ -58,7 +58,7 @@ export class Calendaring {
       resource: event,
     });
 
-    console.log(`Customer ${userId} added to event ${event.id}`);
+    console.log(`Customer ${userId} added to event ${event.id}.`);
   }
   }
 
