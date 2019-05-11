@@ -1,6 +1,8 @@
 *.swp
 **/coverage/**
-orderprocessor/log/
+logs/
 **/.nyc_output/**
 **/.cache/**
 junit_report.xml
+intuit_token.json
+bin/intuit_config.dev.json

@@ -45,24 +45,47 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var fs_1 = __importDefault(require("fs"));
 var intuit_oauth_1 = __importDefault(require("intuit-oauth"));
 var node_quickbooks_1 = __importDefault(require("node-quickbooks"));
 var util_1 = require("util");
 var config = __importStar(require("../intuit_config.prod.json"));
 var IntuitClient = /** @class */ (function () {
-    function IntuitClient(oAuthClient) {
-        this.oAuthClient = oAuthClient;
+    function IntuitClient() {
         this.authorized = false;
+        this.oAuthClient = new intuit_oauth_1.default(config);
     }
     IntuitClient.prototype.authorize = function () {
-        return this.oAuthClient.authorizeUri({
-            scope: [intuit_oauth_1.default.scopes.Accounting, intuit_oauth_1.default.scopes.OpenId],
-            state: 'morganlatimerapi',
+        return __awaiter(this, void 0, void 0, function () {
+            var readFile, token, _a, _b, _c, e_1;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        _d.trys.push([0, 2, , 3]);
+                        readFile = util_1.promisify(fs_1.default.readFile);
+                        _b = (_a = JSON).parse;
+                        _c = String;
+                        return [4 /*yield*/, readFile(TOKEN_PATH)];
+                    case 1:
+                        token = _b.apply(_a, [_c.apply(void 0, [_d.sent()])]);
+                        this.oAuthClient.token.setToken(token);
+                        this.authorized = true;
+                        return [2 /*return*/, ''];
+                    case 2:
+                        e_1 = _d.sent();
+                        console.log('Failed to retrieve saved token. Getting auth url.');
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/, this.oAuthClient.authorizeUri({
+                            scope: [intuit_oauth_1.default.scopes.Accounting, intuit_oauth_1.default.scopes.OpenId],
+                            state: 'morganlatimerapi',
+                        })];
+                }
+            });
         });
     };
     IntuitClient.prototype.fetchToken = function (url) {
         return __awaiter(this, void 0, void 0, function () {
-            var authResponse, e_1;
+            var authResponse, token, e_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -71,11 +94,13 @@ var IntuitClient = /** @class */ (function () {
                     case 1:
                         authResponse = _a.sent();
                         this.authorized = true;
-                        console.log(JSON.stringify(authResponse.getJson(), null, 2));
+                        token = authResponse.getJson();
+                        console.log(JSON.stringify(token, null, 2));
+                        this.saveAuthToken(token);
                         return [2 /*return*/, 'Success.'];
                     case 2:
-                        e_1 = _a.sent();
-                        console.error(e_1);
+                        e_2 = _a.sent();
+                        console.error(e_2);
                         return [2 /*return*/, 'Failed to fetch token.'];
                     case 3: return [2 /*return*/];
                 }
@@ -84,7 +109,7 @@ var IntuitClient = /** @class */ (function () {
     };
     IntuitClient.prototype.maybeRefreshToken = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var authResponse, e_2;
+            var authResponse, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -106,8 +131,8 @@ var IntuitClient = /** @class */ (function () {
                         console.log(JSON.stringify(authResponse.getJson(), null, 2));
                         return [2 /*return*/, true];
                     case 3:
-                        e_2 = _a.sent();
-                        console.error(e_2);
+                        e_3 = _a.sent();
+                        console.error(e_3);
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/, false];
                 }
@@ -216,13 +241,33 @@ var IntuitClient = /** @class */ (function () {
             lastName: customer.FamilyName,
             email: customer.PrimaryEmailAddr.Address,
             ref: customer,
-        }
-            : null;
+        } :
+            null;
     };
     IntuitClient.prototype.getClient = function () {
         return new node_quickbooks_1.default(config.clientId, config.clientSecret, this.oAuthClient.token.access_token, false, '' + this.oAuthClient.token.realmId, config.environment === 'sandbox', config.debug, 34, '2.0', this.oAuthClient.token.refresh_token);
     };
+    IntuitClient.prototype.saveAuthToken = function (token) {
+        return __awaiter(this, void 0, void 0, function () {
+            var writeFile;
+            return __generator(this, function (_a) {
+                try {
+                    writeFile = util_1.promisify(fs_1.default.writeFile);
+                    writeFile(TOKEN_PATH, JSON.stringify(token));
+                    console.log('Intuit token saved.');
+                }
+                catch (e) {
+                    console.log('Failed to save Intuit token.', e);
+                }
+                return [2 /*return*/];
+            });
+        });
+    };
     return IntuitClient;
 }());
 exports.IntuitClient = IntuitClient;
+// The file token.json stores the user's access and refresh tokens, and is
+// created automatically when the authorization flow completes for the first
+// time.
+var TOKEN_PATH = './intuit_token.json';
 //# sourceMappingURL=intuit-client.js.map

@@ -5,27 +5,46 @@ import * as proxyquire from 'proxyquire';
 
 import {IntuitClient} from '../src/intuit-client';
 
-const mockQuickBooks = spyOnClass(QuickBooks);
-const mocked = proxyquire.noCallThru().load('../src/intuit-client', {
-  'node-quickbooks': function() {
-    return mockQuickBooks;
-  },
-  '../intuit_config.prod.json': {},
-});
-
 describe('IntuitClient', () => {
   let oAuthClient: jasmine.SpyObj<OAuthClient>;
+  let oAuthClientConstructor: jasmine.Spy;
+  let mockQuickBooks: jasmine.SpyObj<QuickBooks>;
   let instance: IntuitClient;
+  let fs: jasmine.SpyObj<FS>;
 
   beforeEach(() => {
     spyOn(console, 'log');
     spyOn(console, 'error');
+
+    fs = spyOnClass(FS);
+    fs.readFile.and.callFake((_path: string, callback: Function) => {
+      callback({
+        error: 'Cannot read file.',
+      });
+    });
+    fs.writeFile.and.callFake(
+        (_path: string, _content: string, callback: Function) => {
+          callback(undefined);
+        });
+
     oAuthClient = spyOnClass(OAuthClient) as jasmine.SpyObj<OAuthClient>;
-    instance = new mocked.IntuitClient(oAuthClient);
+    oAuthClientConstructor = jasmine.createSpy().and.returnValue(oAuthClient);
+    (oAuthClientConstructor as any).scopes = OAuthClient.scopes;
+    mockQuickBooks = spyOnClass(QuickBooks);
+    const mocked = proxyquire.noCallThru().load('../src/intuit-client', {
+      'node-quickbooks': function() {
+        return mockQuickBooks;
+      },
+      fs,
+      'intuit-oauth': oAuthClientConstructor,
+      '../intuit_config.prod.json': {},
+
+    });
+    instance = new mocked.IntuitClient();
   });
 
-  it('calls auth correctly', () => {
-    instance.authorize();
+  it('calls auth correctly', async () => {
+    await instance.authorize();
     expect(oAuthClient.authorizeUri).toHaveBeenCalledWith({
       scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],
       state: 'morganlatimerapi',
@@ -197,3 +216,8 @@ describe('IntuitClient', () => {
     });
   });
 });
+
+class FS {
+  readFile(_path: string, _callback: Function) {}
+  writeFile(_path: string, _content: string, _callback: Function) {}
+}

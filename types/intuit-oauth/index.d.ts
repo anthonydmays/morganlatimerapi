@@ -7,5 +7,6 @@ declare module 'intuit-oauth' {
     isAccessTokenValid(): boolean;
     createToken(url: string): Promise<any>;
     refresh(): Promise<any>;
+    setToken(params: any): void;
   }
 }

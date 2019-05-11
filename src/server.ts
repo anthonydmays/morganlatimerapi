@@ -1,8 +1,5 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import OAuthClient from 'intuit-oauth';
-
-import * as intuitConfig from '../intuit_config.prod.json';
 
 import {Accounting} from './accounting';
 import {Calendaring} from './calendaring';
@@ -11,10 +8,14 @@ import {IntuitClient} from './intuit-client';
 
 export const app = express();
 const gapiClient = new GapiClient();
-const intuitClient = new IntuitClient(new OAuthClient(intuitConfig));
+const intuitClient = new IntuitClient();
 
 gapiClient.authorize();
-console.log(`Intuit auth url:\n`, intuitClient.authorize());
+intuitClient.authorize().then(authUrl => {
+  if (authUrl) {
+    console.log(`Intuit auth url:\n`, authUrl);
+  }
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));

@@ -4,11 +4,13 @@
   "description": "Order post-processor API for morganlatimer.com",
   "main": "bin/src/server.js",
   "scripts": {
-    "build": "tsc --resolveJsonModule -w",
-    "deploy": "tsc --resolveJsonModule && gcloud app deploy",
+    "build": "tsc --resolveJsonModule",
+    "build:watch": "tsc --resolveJsonModule -w",
+    "deploy": "npm run build && gcloud app deploy",
     "fix": "git-clang-format",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "start": "node bin/src/server.js",
+    "start:local": "npm run build && node bin/src/server.js",
     "test": "jasmine-ts --config=jasmine.json",
     "test:watch": "nodemon --ext ts --exec 'npm test'",
     "test:coverage": "nyc npm test"
@@ -78,6 +80,7 @@
     "jasmine-reporters": "^2.3.2",
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.3.0",
+    "js-beautify": "^1.9.0-beta5",
     "karma": "^4.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^2.0.0",

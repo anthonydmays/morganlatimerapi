@@ -48,18 +48,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = __importDefault(require("fs"));
 var googleapis_1 = require("googleapis");
 var readline_1 = __importDefault(require("readline"));
-var util_1 = require('util');
+var util_1 = require("util");
 var config = __importStar(require("../gcal_config.json"));
 var GapiClient = /** @class */ (function () {
     function GapiClient() {
         this.authPromise = null;
     }
-    Object.defineProperty(GapiClient.prototype, 'auth', {
-      get: function() {
-        return this._auth;
-      },
-      enumerable: true,
-      configurable: true
+    Object.defineProperty(GapiClient.prototype, "auth", {
+        get: function () {
+            return this._auth;
+        },
+        enumerable: true,
+        configurable: true
     });
     /**
      * Create an OAuth2 client with the given credentials.
@@ -75,89 +75,81 @@ var GapiClient = /** @class */ (function () {
             });
         });
     };
-    GapiClient.prototype.doAuth = function() {
-      return __awaiter(this, void 0, void 0, function() {
-        var _a, client_secret, client_id, redirect_uris, readFile, token, _b;
-        return __generator(this, function(_c) {
-          switch (_c.label) {
-            case 0:
-              _a = config.installed, client_secret = _a.client_secret,
-              client_id = _a.client_id, redirect_uris = _a.redirect_uris;
-              this._auth = new googleapis_1.google.auth.OAuth2(
-                  client_id, client_secret, redirect_uris[0]);
-              readFile = util_1.promisify(fs_1.default.readFile);
-              _c.label = 1;
-            case 1:
-              _c.trys.push([1, 3, , 5]);
-              return [4 /*yield*/, readFile(TOKEN_PATH)];
-            case 2:
-              token = _c.sent();
-              this.auth.setCredentials(JSON.parse(String(token)));
-              return [3 /*break*/, 5];
-            case 3:
-              _b = _c.sent();
-              return [4 /*yield*/, this.getAccessToken()];
-            case 4:
-              _c.sent();
-              return [3 /*break*/, 5];
-            case 5:
-              return [2 /*return*/];
-          }
+    GapiClient.prototype.doAuth = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, client_secret, client_id, redirect_uris, readFile, token, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _a = config.installed, client_secret = _a.client_secret, client_id = _a.client_id, redirect_uris = _a.redirect_uris;
+                        this._auth =
+                            new googleapis_1.google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+                        readFile = util_1.promisify(fs_1.default.readFile);
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 3, , 5]);
+                        return [4 /*yield*/, readFile(TOKEN_PATH)];
+                    case 2:
+                        token = _c.sent();
+                        this.auth.setCredentials(JSON.parse(String(token)));
+                        return [3 /*break*/, 5];
+                    case 3:
+                        _b = _c.sent();
+                        return [4 /*yield*/, this.getAccessToken()];
+                    case 4:
+                        _c.sent();
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
+                }
+            });
         });
-      });
     };
     /**
      * Get and store new token after prompting for user authorization.
      */
-    GapiClient.prototype.getAccessToken = function() {
-      return __awaiter(this, void 0, void 0, function() {
-        var authUrl, code, getToken, token, writeFile;
-        return __generator(this, function(_a) {
-          switch (_a.label) {
-            case 0:
-              authUrl = this.auth.generateAuthUrl({
-                access_type: 'offline',
-                scope: SCOPES,
-              });
-              console.log(
-                  'Authorize this app by visiting this url:\n', authUrl);
-              return [
-                4 /*yield*/,
-                questionAsync('Enter the code from that page here: ')
-              ];
-            case 1:
-              code = _a.sent();
-              getToken = util_1.promisify(this.auth.getToken).bind(this.auth);
-              return [4 /*yield*/, getToken(code)];
-            case 2:
-              token = _a.sent();
-              this.auth.setCredentials(token);
-              writeFile = util_1.promisify(fs_1.default.writeFile);
-              return [
-                4 /*yield*/, writeFile(TOKEN_PATH, JSON.stringify(token))
-              ];
-            case 3:
-              _a.sent();
-              console.log('Token saved.');
-              return [2 /*return*/];
-          }
+    GapiClient.prototype.getAccessToken = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var authUrl, code, getToken, token, writeFile;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        authUrl = this.auth.generateAuthUrl({
+                            access_type: 'offline',
+                            scope: SCOPES,
+                        });
+                        console.log('Authorize this app by visiting this url:\n', authUrl);
+                        return [4 /*yield*/, questionAsync('Enter the code from that page here: ')];
+                    case 1:
+                        code = _a.sent();
+                        getToken = util_1.promisify(this.auth.getToken).bind(this.auth);
+                        return [4 /*yield*/, getToken(code)];
+                    case 2:
+                        token = _a.sent();
+                        this.auth.setCredentials(token);
+                        writeFile = util_1.promisify(fs_1.default.writeFile);
+                        return [4 /*yield*/, writeFile(TOKEN_PATH, JSON.stringify(token))];
+                    case 3:
+                        _a.sent();
+                        console.log('Token saved.');
+                        return [2 /*return*/];
+                }
+            });
         });
-      });
     };
     return GapiClient;
 }());
 exports.GapiClient = GapiClient;
 function questionAsync(message) {
-  return new Promise(function(resolve) {
-    var rl = readline_1.default.createInterface({
-      input: process.stdin,
-      output: process.stdout,
+    return new Promise(function (resolve) {
+        var rl = readline_1.default.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+        rl.question(message, function (result) {
+            rl.close();
+            resolve(result);
+        });
     });
-    rl.question(message, function(result) {
-      rl.close();
-      resolve(result);
-    });
-  });
 }
 // If modifying these scopes, delete token.json.
 var SCOPES = ['https://www.googleapis.com/auth/calendar'];

@@ -12,10 +12,10 @@ import express = require('express');
 import request = require('supertest');
 
 describe('Server', () => {
-  let mockIntuitClient: IntuitClient;
-  let mockGapiClient: GapiClient;
-  let mockAccounting: Accounting;
-  let mockCalendaring: Calendaring;
+  let mockIntuitClient: jasmine.SpyObj<IntuitClient>;
+  let mockGapiClient: jasmine.SpyObj<GapiClient>;
+  let mockAccounting: jasmine.SpyObj<Accounting>;
+  let mockCalendaring: jasmine.SpyObj<Calendaring>;
   let mockExpress: Express;
   let app: Express;
 
@@ -24,6 +24,7 @@ describe('Server', () => {
     spyOn(console, 'error');
 
     mockIntuitClient = spyOnClass(IntuitClient);
+    mockIntuitClient.authorize.and.returnValue(Promise.resolve('http://123'));
     mockGapiClient = spyOnClass(GapiClient);
     mockAccounting = spyOnClass(Accounting);
     mockCalendaring = spyOnClass(Calendaring);
