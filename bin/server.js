@@ -41,13 +41,15 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var body_parser_1 = __importDefault(require("body-parser"));
 var express_1 = __importDefault(require("express"));
+var yargs_1 = require('yargs');
 var accounting_1 = require("./accounting");
 var calendaring_1 = require("./calendaring");
 var gapi_client_1 = require("./gapi-client");
 var intuit_client_1 = require("./intuit-client");
 exports.app = express_1.default();
 var gapiClient = new gapi_client_1.GapiClient();
-var intuitClient = new intuit_client_1.IntuitClient();
+var intuitConfig = yargs_1.argv.intuitConfig || undefined;
+var intuitClient = new intuit_client_1.IntuitClient(intuitConfig);
 gapiClient.authorize();
 intuitClient.authorize().then(function (authUrl) {
     if (authUrl) {

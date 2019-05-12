@@ -10,7 +10,8 @@ export class IntuitClient implements AccountingClient {
   private config!: any;
   private authorized = false;
 
-  constructor() {
+  constructor(private readonly configFile: string = INTUIT_CONFIG_FILE) {
+    console.log('Using Intuit config', configFile);
     this.promisedOAuthClient = this.getOAuthClient();
   }
 
@@ -145,7 +146,7 @@ export class IntuitClient implements AccountingClient {
   }
 
   private async getOAuthClient(): Promise<OAuthClient> {
-    this.config = JSON.parse(await readFile(CONFIG_BUCKET, INTUIT_CONFIG_FILE));
+    this.config = JSON.parse(await readFile(CONFIG_BUCKET, this.configFile));
     return new OAuthClient(this.config);
   }
 

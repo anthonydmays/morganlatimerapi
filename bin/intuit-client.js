@@ -42,12 +42,18 @@ var intuit_oauth_1 = __importDefault(require("intuit-oauth"));
 var node_quickbooks_1 = __importDefault(require("node-quickbooks"));
 var util_1 = require("util");
 var gcloud_storage_utils_1 = require("./gcloud-storage-utils");
-var IntuitClient = /** @class */ (function () {
-    function IntuitClient() {
+var IntuitClient =
+    /** @class */ (function() {
+      function IntuitClient(configFile) {
+        if (configFile === void 0) {
+          configFile = INTUIT_CONFIG_FILE;
+        }
+        this.configFile = configFile;
         this.authorized = false;
+        console.log('Using Intuit config', configFile);
         this.promisedOAuthClient = this.getOAuthClient();
-    }
-    IntuitClient.prototype.authorize = function () {
+      }
+      IntuitClient.prototype.authorize = function() {
         return __awaiter(this, void 0, void 0, function () {
             var oAuthClient, token, _a, _b, e_1;
             return __generator(this, function (_c) {
@@ -78,8 +84,8 @@ var IntuitClient = /** @class */ (function () {
                 }
             });
         });
-    };
-    IntuitClient.prototype.fetchToken = function (url) {
+      };
+      IntuitClient.prototype.fetchToken = function(url) {
         return __awaiter(this, void 0, void 0, function () {
             var oAuthClient, authResponse, token, e_2;
             return __generator(this, function (_a) {
@@ -106,8 +112,8 @@ var IntuitClient = /** @class */ (function () {
                 }
             });
         });
-    };
-    IntuitClient.prototype.maybeRefreshToken = function () {
+      };
+      IntuitClient.prototype.maybeRefreshToken = function() {
         return __awaiter(this, void 0, void 0, function () {
             var oAuthClient, authResponse, e_3;
             return __generator(this, function (_a) {
@@ -141,8 +147,8 @@ var IntuitClient = /** @class */ (function () {
                 }
             });
         });
-    };
-    IntuitClient.prototype.getCustomer = function (email) {
+      };
+      IntuitClient.prototype.getCustomer = function(email) {
         return __awaiter(this, void 0, void 0, function () {
             var qbo, findCustomers, response, customer;
             return __generator(this, function (_a) {
@@ -161,8 +167,8 @@ var IntuitClient = /** @class */ (function () {
                 }
             });
         });
-    };
-    IntuitClient.prototype.createCustomer = function (customer) {
+      };
+      IntuitClient.prototype.createCustomer = function(customer) {
         return __awaiter(this, void 0, void 0, function () {
             var qbo, createCustomer, newCustomer;
             return __generator(this, function (_a) {
@@ -182,8 +188,8 @@ var IntuitClient = /** @class */ (function () {
                 }
             });
         });
-    };
-    IntuitClient.prototype.getInvoice = function (orderNumber) {
+      };
+      IntuitClient.prototype.getInvoice = function(orderNumber) {
         return __awaiter(this, void 0, void 0, function () {
             var qbo, findInvoices, response, invoice;
             return __generator(this, function (_a) {
@@ -202,8 +208,8 @@ var IntuitClient = /** @class */ (function () {
                 }
             });
         });
-    };
-    IntuitClient.prototype.createInvoice = function (order, customer) {
+      };
+      IntuitClient.prototype.createInvoice = function(order, customer) {
         return __awaiter(this, void 0, void 0, function () {
             var qbo, createInvoice, invoiceLines, invoice, newInvoice;
             return __generator(this, function (_a) {
@@ -243,8 +249,8 @@ var IntuitClient = /** @class */ (function () {
                 }
             });
         });
-    };
-    IntuitClient.prototype.mapCustomer = function (customer) {
+      };
+      IntuitClient.prototype.mapCustomer = function(customer) {
         var mapped = customer && {
             id: customer.Id,
             firstName: customer.GivenName,
@@ -253,8 +259,8 @@ var IntuitClient = /** @class */ (function () {
             ref: customer,
         };
         return mapped || null;
-    };
-    IntuitClient.prototype.getOAuthClient = function () {
+      };
+      IntuitClient.prototype.getOAuthClient = function() {
         return __awaiter(this, void 0, void 0, function () {
             var _a, _b, _c;
             return __generator(this, function (_d) {
@@ -262,15 +268,20 @@ var IntuitClient = /** @class */ (function () {
                     case 0:
                         _a = this;
                         _c = (_b = JSON).parse;
-                        return [4 /*yield*/, gcloud_storage_utils_1.readFile(gcloud_storage_utils_1.CONFIG_BUCKET, INTUIT_CONFIG_FILE)];
+                        return [
+                          4 /*yield*/,
+                          gcloud_storage_utils_1.readFile(
+                              gcloud_storage_utils_1.CONFIG_BUCKET,
+                              this.configFile)
+                        ];
                     case 1:
                         _a.config = _c.apply(_b, [_d.sent()]);
                         return [2 /*return*/, new intuit_oauth_1.default(this.config)];
                 }
             });
         });
-    };
-    IntuitClient.prototype.getClient = function () {
+      };
+      IntuitClient.prototype.getClient = function() {
         return __awaiter(this, void 0, void 0, function () {
             var oAuthClient;
             return __generator(this, function (_a) {
@@ -282,8 +293,8 @@ var IntuitClient = /** @class */ (function () {
                 }
             });
         });
-    };
-    IntuitClient.prototype.saveAuthToken = function (token) {
+      };
+      IntuitClient.prototype.saveAuthToken = function(token) {
         return __awaiter(this, void 0, void 0, function () {
             var e_4;
             return __generator(this, function (_a) {
@@ -303,9 +314,9 @@ var IntuitClient = /** @class */ (function () {
                 }
             });
         });
-    };
-    return IntuitClient;
-}());
+      };
+      return IntuitClient;
+    }());
 exports.IntuitClient = IntuitClient;
 var INTUIT_CONFIG_FILE = 'intuit_config.prod.json';
 //# sourceMappingURL=intuit-client.js.map

@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
 import express from 'express';
+import {argv} from 'yargs';
 
 import {Accounting} from './accounting';
 import {Calendaring} from './calendaring';
@@ -8,7 +9,8 @@ import {IntuitClient} from './intuit-client';
 
 export const app = express();
 const gapiClient = new GapiClient();
-const intuitClient = new IntuitClient();
+const intuitConfig = argv.intuitConfig as string || undefined;
+const intuitClient = new IntuitClient(intuitConfig);
 
 gapiClient.authorize();
 intuitClient.authorize().then(authUrl => {
