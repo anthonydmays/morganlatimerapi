@@ -1,10 +1,9 @@
-import fs from 'fs';
 import {OAuth2Client} from 'google-auth-library';
 import {google} from 'googleapis';
 import readline from 'readline';
 import {promisify} from 'util';
 
-import * as config from '../gcal_config.json';
+import {CONFIG_BUCKET, readFile, writeFile} from './gcloud-storage-utils';
 
 export class GapiClient {
   private _auth?: OAuth2Client;
@@ -24,17 +23,17 @@ export class GapiClient {
     }
     this.authPromise = this.doAuth();
     return this.authPromise;
-  }
+    }
 
   async doAuth() {
+    const config = JSON.parse(await readFile(CONFIG_BUCKET, GCAL_CONFIG_FILE));
     const {client_secret, client_id, redirect_uris} = config.installed;
     this._auth =
         new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
-    // Check if we have previously stored a token.
-    const readFile = promisify(fs.readFile);
     try {
-      const token = await readFile(TOKEN_PATH);
+      // Check if we have previously stored a token.
+      const token = await readFile(CONFIG_BUCKET, TOKEN_FILE);
       this.auth.setCredentials(JSON.parse(String(token)));
     } catch {
       await this.getAccessToken();
@@ -59,11 +58,10 @@ export class GapiClient {
     this.auth.setCredentials(token);
 
     // Store the token to disk for later program executions
-    const writeFile = promisify(fs.writeFile);
-    await writeFile(TOKEN_PATH, JSON.stringify(token));
+    await writeFile(CONFIG_BUCKET, TOKEN_FILE, JSON.stringify(token));
     console.log('Token saved.');
   }
-}
+  }
 
 function questionAsync(message: string): Promise<string> {
   return new Promise((resolve) => {
@@ -76,7 +74,7 @@ function questionAsync(message: string): Promise<string> {
       resolve(result);
     });
   });
-}
+  }
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
@@ -84,4 +82,6 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = './gapi_token.json';
+const TOKEN_FILE = 'gapi_token.json';
+
+const GCAL_CONFIG_FILE = 'gcal_config.json';

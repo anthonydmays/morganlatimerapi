@@ -2,15 +2,15 @@
   "name": "orderprocessor",
   "version": "1.0.0",
   "description": "Order post-processor API for morganlatimer.com",
-  "main": "bin/src/server.js",
+  "main": "bin/server.js",
   "scripts": {
-    "build": "tsc --resolveJsonModule",
-    "build:watch": "tsc --resolveJsonModule -w",
+    "build": "tsc",
+    "build:watch": "tsc -w",
     "deploy": "npm run build && gcloud app deploy",
     "fix": "git-clang-format",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "start": "node bin/src/server.js",
-    "start:local": "npm run build && node bin/src/server.js",
+    "start": "node bin/server.js",
+    "start:local": "npm run build && node bin/server.js",
     "test": "jasmine-ts --config=jasmine.json",
     "test:watch": "nodemon --ext ts --exec 'npm test'",
     "test:coverage": "nyc npm test"
@@ -51,6 +51,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/nodejs-repo-tools": "^3.2.0",
+    "@google-cloud/storage": "^2.5.0",
     "@types/body-parser": "^1.17.0",
     "@types/gapi": "0.0.36",
     "@types/gapi.auth2": "0.0.50",

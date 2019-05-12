@@ -3,6 +3,7 @@ import {spyOnClass} from 'jasmine-es6-spies';
 import QuickBooks from 'node-quickbooks';
 import * as proxyquire from 'proxyquire';
 
+import * as storageUtils from '../src/gcloud-storage-utils';
 import {IntuitClient} from '../src/intuit-client';
 
 describe('IntuitClient', () => {
@@ -10,22 +11,24 @@ describe('IntuitClient', () => {
   let oAuthClientConstructor: jasmine.Spy;
   let mockQuickBooks: jasmine.SpyObj<QuickBooks>;
   let instance: IntuitClient;
-  let fs: jasmine.SpyObj<FS>;
 
   beforeEach(() => {
     spyOn(console, 'log');
     spyOn(console, 'error');
 
-    fs = spyOnClass(FS);
-    fs.readFile.and.callFake((_path: string, callback: Function) => {
-      callback({
-        error: 'Cannot read file.',
-      });
+    const readFile = spyOn(storageUtils, 'readFile');
+    readFile.and.callFake((bucket: string, file: string) => {
+      expect(bucket).toEqual(storageUtils.CONFIG_BUCKET);
+      switch (file) {
+        case 'intuit_config.prod.json': {
+          return Promise.resolve(JSON.stringify({tokenFile:'test_token'}));
+        }
+        default: {
+          return Promise.reject('not found');
+        }
+      }
     });
-    fs.writeFile.and.callFake(
-        (_path: string, _content: string, callback: Function) => {
-          callback(undefined);
-        });
+    spyOn(storageUtils, 'writeFile').and.returnValue(Promise.resolve());
 
     oAuthClient = spyOnClass(OAuthClient) as jasmine.SpyObj<OAuthClient>;
     oAuthClientConstructor = jasmine.createSpy().and.returnValue(oAuthClient);
@@ -35,15 +38,14 @@ describe('IntuitClient', () => {
       'node-quickbooks': function() {
         return mockQuickBooks;
       },
-      fs,
+      'gcloud-storage-utils': storageUtils,
       'intuit-oauth': oAuthClientConstructor,
-      '../intuit_config.prod.json': {},
 
     });
     instance = new mocked.IntuitClient();
   });
 
-  it('calls auth correctly', async () => {
+  it('calls auth correctly', async() => {
     await instance.authorize();
     expect(oAuthClient.authorizeUri).toHaveBeenCalledWith({
       scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],
@@ -216,8 +218,3 @@ describe('IntuitClient', () => {
     });
   });
 });
-
-class FS {
-  readFile(_path: string, _callback: Function) {}
-  writeFile(_path: string, _content: string, _callback: Function) {}
-}
