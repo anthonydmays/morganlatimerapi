@@ -3,7 +3,7 @@ import {Storage} from '@google-cloud/storage';
 const storage = new Storage();
 
 export function readFile(bucket: string, name: string): Promise<string> {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const file = await storage.bucket(bucket).file(name);
     const stream = file.createReadStream();
     let buf = '';
@@ -20,11 +20,11 @@ export function readFile(bucket: string, name: string): Promise<string> {
           resolve(buf);
         });
   });
-  }
+}
 
 export function writeFile(
     bucket: string, name: string, content: string): Promise<void> {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const file = await storage.bucket(bucket).file(name);
     const stream = file.createWriteStream();
     stream

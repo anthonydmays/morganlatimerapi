@@ -21,11 +21,9 @@ describe('IntuitClient', () => {
       expect(bucket).toEqual(storageUtils.CONFIG_BUCKET);
       switch (file) {
         case 'intuit_config.prod.json': {
-          return Promise.resolve(JSON.stringify({tokenFile:'test_token'}));
+          return Promise.resolve(JSON.stringify({tokenFile: 'test_token'}));
         }
-        default: {
-          return Promise.reject('not found');
-        }
+        default: { return Promise.reject('not found'); }
       }
     });
     spyOn(storageUtils, 'writeFile').and.returnValue(Promise.resolve());
@@ -45,7 +43,7 @@ describe('IntuitClient', () => {
     instance = new mocked.IntuitClient();
   });
 
-  it('calls auth correctly', async() => {
+  it('calls auth correctly', async () => {
     await instance.authorize();
     expect(oAuthClient.authorizeUri).toHaveBeenCalledWith({
       scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],

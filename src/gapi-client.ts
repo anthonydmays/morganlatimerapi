@@ -23,7 +23,7 @@ export class GapiClient {
     }
     this.authPromise = this.doAuth();
     return this.authPromise;
-    }
+  }
 
   async doAuth() {
     const config = JSON.parse(await readFile(CONFIG_BUCKET, GCAL_CONFIG_FILE));
@@ -61,7 +61,7 @@ export class GapiClient {
     await writeFile(CONFIG_BUCKET, TOKEN_FILE, JSON.stringify(token));
     console.log('Token saved.');
   }
-  }
+}
 
 function questionAsync(message: string): Promise<string> {
   return new Promise((resolve) => {
@@ -74,7 +74,7 @@ function questionAsync(message: string): Promise<string> {
       resolve(result);
     });
   });
-  }
+}
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];

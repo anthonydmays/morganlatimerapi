@@ -62,14 +62,12 @@ describe('GapiClient', () => {
         case 'gapi_token.json': {
           return promise;
         }
-        default: {
-          throw new Error(`File ${file} not expected.`);
-        }
+        default: { throw new Error(`File ${file} not expected.`); }
       }
     });
   }
 
-  it('initializes gapi with existing token', async() => {
+  it('initializes gapi with existing token', async () => {
     await instance.authorize();
     expect(mockOAuth2ClientConstructor)
         .toHaveBeenCalledWith('my_id', 'my_secret', 'https://some-place.org');
@@ -86,7 +84,7 @@ describe('GapiClient', () => {
     expect(mockOAuth2ClientConstructor).not.toHaveBeenCalled();
   });
 
-  it('prompts for auth token if not existing', async() => {
+  it('prompts for auth token if not existing', async () => {
     setupReadFileWithTokenPromise(Promise.reject('blah'));
     mockOAuth2Client.generateAuthUrl.and.returnValue('http://go-here');
     mockReadline.question.and.callFake((msg: string, callback: Function) => {
@@ -117,7 +115,7 @@ describe('GapiClient', () => {
     });
   });
 
-  it('errors when token cannot be retrieved', async() => {
+  it('errors when token cannot be retrieved', async () => {
     setupReadFileWithTokenPromise(Promise.reject('blah'));
     mockReadline.question.and.callFake((_: string, callback: Function) => {
       callback('56785');
@@ -137,7 +135,7 @@ describe('GapiClient', () => {
     expect(error).toEqual(expectedError);
   });
 
-  it('does not error if token cannot be saved', async() => {
+  it('does not error if token cannot be saved', async () => {
     setupReadFileWithTokenPromise(Promise.reject('blah'));
     mockReadline.question.and.callFake((_: string, callback: Function) => {
       callback('56785');
