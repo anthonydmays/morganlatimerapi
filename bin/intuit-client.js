@@ -305,7 +305,7 @@ var IntuitClient = /** @class */ (function() {
   };
   IntuitClient.prototype.createInvoice = function(order, customer) {
     return __awaiter(this, void 0, void 0, function() {
-      var qbo, createInvoice, invoice, newInvoice;
+      var qbo, createInvoice, invoiceLines, invoice, newInvoice;
       return __generator(this, function(_a) {
         switch (_a.label) {
           case 0:
@@ -313,6 +313,18 @@ var IntuitClient = /** @class */ (function() {
           case 1:
             qbo = _a.sent();
             createInvoice = util_1.promisify(qbo.createInvoice).bind(qbo);
+            invoiceLines = order.line_items.map(function(lineItem, i) {
+              return {
+                LineNum: i + 1,
+                Description: lineItem.name,
+                DetailType: 'SalesItemLineDetail',
+                Amount: Number(lineItem.line_total),
+                SalesItemLineDetail: {
+                  Qty: Number(lineItem.quantity),
+                  UnitPrice: Number(lineItem.unit_price),
+                },
+              };
+            });
             invoice = {
               CustomerRef: {
                 value: customer.ref.Id,
@@ -323,18 +335,7 @@ var IntuitClient = /** @class */ (function() {
               TrackingNum: order.transaction_id,
               TxnDate: order.date,
               DueDate: order.date,
-              Line: order.line_items.map(function(lineItem, i) {
-                return ({
-                  LineNum: i + 1,
-                  Description: lineItem.name,
-                  DetailType: 'SalesItemLineDetail',
-                  Amount: Number(lineItem.line_total),
-                  SalesItemLineDetail: {
-                    Qty: Number(lineItem.quantity),
-                    UnitPrice: Number(lineItem.unit_price),
-                  },
-                });
-              }),
+              Line: invoiceLines,
             };
             return [4 /*yield*/, createInvoice(invoice)];
           case 2:
@@ -345,14 +346,14 @@ var IntuitClient = /** @class */ (function() {
     });
   };
   IntuitClient.prototype.mapCustomer = function(customer) {
-    return customer ? {
+    var mapped = customer && {
       id: customer.Id,
       firstName: customer.GivenName,
       lastName: customer.FamilyName,
       email: customer.PrimaryEmailAddr.Address,
       ref: customer,
-    } :
-                      null;
+    };
+    return mapped || null;
   };
   IntuitClient.prototype.getOAuthClient = function() {
     return __awaiter(this, void 0, void 0, function() {
