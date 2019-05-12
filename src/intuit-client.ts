@@ -12,7 +12,7 @@ export class IntuitClient implements AccountingClient {
 
   constructor() {
     this.promisedOAuthClient = this.getOAuthClient();
-  }
+    }
 
   async authorize(): Promise<string> {
     const oAuthClient = await this.promisedOAuthClient;
@@ -26,12 +26,12 @@ export class IntuitClient implements AccountingClient {
       return '';
     } catch (e) {
       console.log('Failed to retrieve saved token. Getting auth url.');
-    }
+      }
     return oAuthClient.authorizeUri({
       scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],
       state: 'morganlatimerapi',
     });
-  }
+    }
 
   async fetchToken(url: string): Promise<string> {
     const oAuthClient = await this.promisedOAuthClient;
@@ -53,11 +53,11 @@ export class IntuitClient implements AccountingClient {
       console.error('Intuit API access not authorized. Please grant access.');
       return false;
       }
-      const oAuthClient = await this.promisedOAuthClient;
-      if (oAuthClient.isAccessTokenValid()) {
-        console.log('Intuit access token valid.');
-        return true;
-      }
+    const oAuthClient = await this.promisedOAuthClient;
+    if (oAuthClient.isAccessTokenValid()) {
+      console.log('Intuit access token valid.');
+      return true;
+    }
     console.log('Refreshing Intuit token...');
     try {
       const authResponse = await oAuthClient.refresh();
@@ -105,6 +105,18 @@ export class IntuitClient implements AccountingClient {
   async createInvoice(order: any, customer: Customer): Promise<any> {
     const qbo = await this.getClient();
     const createInvoice = promisify(qbo.createInvoice).bind(qbo);
+    const invoiceLines = order.line_items.map((lineItem: any, i: number) => {
+      return {
+        LineNum: i + 1,
+        Description: lineItem.name,
+        DetailType: 'SalesItemLineDetail',
+        Amount: Number(lineItem.line_total),
+        SalesItemLineDetail: {
+          Qty: Number(lineItem.quantity),
+          UnitPrice: Number(lineItem.unit_price),
+        },
+      };
+    });
     const invoice = {
       CustomerRef: {
         value: customer.ref.Id,
@@ -115,30 +127,21 @@ export class IntuitClient implements AccountingClient {
       TrackingNum: order.transaction_id,
       TxnDate: order.date,
       DueDate: order.date,
-      Line: order.line_items.map((lineItem: any, i: number) => ({
-                                   LineNum: i + 1,
-                                   Description: lineItem.name,
-                                   DetailType: 'SalesItemLineDetail',
-                                   Amount: Number(lineItem.line_total),
-                                   SalesItemLineDetail: {
-                                     Qty: Number(lineItem.quantity),
-                                     UnitPrice: Number(lineItem.unit_price),
-                                   },
-                                 })),
+      Line: invoiceLines,
     };
     const newInvoice = await createInvoice(invoice);
     return newInvoice;
   }
 
   private mapCustomer(customer: any|null): Customer|null {
-    return customer ? {
+    const mapped = customer && {
       id: customer.Id,
       firstName: customer.GivenName,
       lastName: customer.FamilyName,
       email: customer.PrimaryEmailAddr.Address,
       ref: customer,
-    } :
-                      null;
+    };
+    return mapped || null;
   }
 
   private async getOAuthClient(): Promise<OAuthClient> {
@@ -164,6 +167,6 @@ export class IntuitClient implements AccountingClient {
       console.log('Failed to save Intuit token.', e);
     }
   }
-}
+  }
 
 const INTUIT_CONFIG_FILE = 'intuit_config.prod.json';
