@@ -23,6 +23,7 @@
     "strictPropertyInitialization": true,
     "outDir": "./bin",
     "baseUrl": ".",
+    "lib": ["esnext", "dom"],
     "typeRoots": [
        "./types",
        "./node_modules/@types"
