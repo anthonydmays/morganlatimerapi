@@ -36,7 +36,7 @@ describe('IntuitClient', () => {
       'node-quickbooks': function() {
         return mockQuickBooks;
       },
-      'gcloud-storage-utils': storageUtils,
+      './gcloud-storage-utils': storageUtils,
       'intuit-oauth': oAuthClientConstructor,
 
     });

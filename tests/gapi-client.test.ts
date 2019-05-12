@@ -37,7 +37,7 @@ describe('GapiClient', () => {
     mockOAuth2ClientConstructor.and.callFake(() => mockOAuth2Client);
     mockReadline = spyOnClass(Readline);
     const mocked = proxyquire.noCallThru().load('../src/gapi-client', {
-      'gcloud-storage-utils': storageUtils,
+      './gcloud-storage-utils': storageUtils,
       'googleapis': {
         google: {
           auth: {
