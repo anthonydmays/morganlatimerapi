@@ -12,7 +12,7 @@ export class IntuitClient implements AccountingClient {
 
   constructor() {
     this.promisedOAuthClient = this.getOAuthClient();
-    }
+  }
 
   async authorize(): Promise<string> {
     const oAuthClient = await this.promisedOAuthClient;
@@ -26,12 +26,12 @@ export class IntuitClient implements AccountingClient {
       return '';
     } catch (e) {
       console.log('Failed to retrieve saved token. Getting auth url.');
-      }
+    }
     return oAuthClient.authorizeUri({
       scope: [OAuthClient.scopes.Accounting, OAuthClient.scopes.OpenId],
       state: 'morganlatimerapi',
     });
-    }
+  }
 
   async fetchToken(url: string): Promise<string> {
     const oAuthClient = await this.promisedOAuthClient;
@@ -53,11 +53,11 @@ export class IntuitClient implements AccountingClient {
       console.error('Intuit API access not authorized. Please grant access.');
       return false;
       }
-    const oAuthClient = await this.promisedOAuthClient;
-    if (oAuthClient.isAccessTokenValid()) {
-      console.log('Intuit access token valid.');
-      return true;
-    }
+      const oAuthClient = await this.promisedOAuthClient;
+      if (oAuthClient.isAccessTokenValid()) {
+        console.log('Intuit access token valid.');
+        return true;
+      }
     console.log('Refreshing Intuit token...');
     try {
       const authResponse = await oAuthClient.refresh();
@@ -167,6 +167,6 @@ export class IntuitClient implements AccountingClient {
       console.log('Failed to save Intuit token.', e);
     }
   }
-  }
+}
 
 const INTUIT_CONFIG_FILE = 'intuit_config.prod.json';
