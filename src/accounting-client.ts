@@ -5,7 +5,7 @@ export interface AccountingClient {
   createCustomer(customer: Customer): Promise<Customer|null>;
   getInvoice(orderNumber: number): Promise<any>;
   maybeRefreshToken(): Promise<boolean>;
-  }
+}
 
 export interface Customer {
   id?: number;

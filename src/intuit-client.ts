@@ -47,18 +47,18 @@ export class IntuitClient implements AccountingClient {
       console.error(e);
       return 'Failed to fetch token.';
     }
-    }
+  }
 
   async maybeRefreshToken(): Promise<boolean> {
     if (!this.authorized) {
       console.error('Intuit API access not authorized. Please grant access.');
       return false;
-      }
-      const oAuthClient = await this.promisedOAuthClient;
-      if (oAuthClient.isAccessTokenValid()) {
-        console.log('Intuit access token valid.');
-        return true;
-      }
+    }
+    const oAuthClient = await this.promisedOAuthClient;
+    if (oAuthClient.isAccessTokenValid()) {
+      console.log('Intuit access token valid.');
+      return true;
+    }
     console.log('Refreshing Intuit token...');
     try {
       const authResponse = await oAuthClient.refresh();
@@ -66,9 +66,9 @@ export class IntuitClient implements AccountingClient {
       return true;
     } catch (e) {
       console.error(e);
-      }
-    return false;
     }
+    return false;
+  }
 
   async getCustomer(email: string): Promise<Customer|null> {
     const qbo = await this.getClient();
@@ -79,7 +79,7 @@ export class IntuitClient implements AccountingClient {
     const customer =
         response.QueryResponse.Customer && response.QueryResponse.Customer[0];
     return this.mapCustomer(customer);
-    }
+  }
 
   async createCustomer(customer: Customer): Promise<Customer|null> {
     const qbo = await this.getClient();
@@ -90,7 +90,7 @@ export class IntuitClient implements AccountingClient {
       PrimaryEmailAddr: {Address: customer.email},
     });
     return this.mapCustomer(newCustomer);
-    }
+  }
 
   async getInvoice(orderNumber: number): Promise<any> {
     const qbo = await this.getClient();
@@ -101,7 +101,7 @@ export class IntuitClient implements AccountingClient {
     const invoice =
         response.QueryResponse.Invoice && response.QueryResponse.Invoice[0];
     return invoice;
-    }
+  }
 
   async createInvoice(order: any, customer: Customer): Promise<any> {
     const qbo = await this.getClient();

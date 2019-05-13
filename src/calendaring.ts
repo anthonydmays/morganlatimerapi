@@ -11,7 +11,7 @@ export class Calendaring {
       version: 'v3',
       auth: gapiClient.auth,
     });
-    }
+  }
 
   async book(order: any) {
     const email =
@@ -23,7 +23,7 @@ export class Calendaring {
       }
       this.addCustomerToEligibleEvent(item.sku, order.user_id, email);
     }
-    }
+  }
 
   async addCustomerToEligibleEvent(sku: string, userId: string, email: string) {
     const listEvents = promisify(this.calendar.events.list);
@@ -40,7 +40,7 @@ export class Calendaring {
     if (!listResponse.data.items.length) {
       console.warn(`Event not found for sku ${skuId}.`);
       return;
-      }
+    }
 
     const event = listResponse.data.items[0];
     event.attendees = event.attendees || [];
@@ -61,7 +61,7 @@ export class Calendaring {
 
     console.log(`Customer ${userId} added to event ${event.id}.`);
   }
-  }
+}
 
 const CALENDAR_ID =
     'morganlatimer.com_kpl73s5ioudnrjflmnulj6uhqo@group.calendar.google.com';
