@@ -3,10 +3,9 @@ node_js:
     - "10"
 
 r_github_packages:
-  anthonydmays/morganlatimerapi/orderprocessor
+  anthonydmays/morganlatimerapi
 
 before_script:
-  cd orderprocessor/
   npm install
 
 script:
