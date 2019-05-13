@@ -26,7 +26,7 @@ export class GapiClient {
   }
 
   async doAuth() {
-    const config = JSON.parse(await readFile(CONFIG_BUCKET, GCAL_CONFIG_FILE));
+    const config = JSON.parse(await readFile(CONFIG_BUCKET, GAPI_CONFIG_FILE));
     const {client_secret, client_id, redirect_uris} = config.installed;
     this._auth =
         new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
@@ -84,4 +84,4 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 // time.
 const TOKEN_FILE = 'gapi_token.json';
 
-const GCAL_CONFIG_FILE = 'gcal_config.json';
+const GAPI_CONFIG_FILE = 'gapi_config.json';

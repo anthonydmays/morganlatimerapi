@@ -56,7 +56,7 @@ describe('GapiClient', () => {
     readFile.and.callFake((bucket: string, file: string) => {
       expect(bucket).toEqual(storageUtils.CONFIG_BUCKET);
       switch (file) {
-        case 'gcal_config.json': {
+        case 'gapi_config.json': {
           return Promise.resolve(config);
         }
         case 'gapi_token.json': {
