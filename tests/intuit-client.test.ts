@@ -10,13 +10,16 @@ describe('IntuitClient', () => {
   let oAuthClient: jasmine.SpyObj<OAuthClient>;
   let oAuthClientConstructor: jasmine.Spy;
   let mockQuickBooks: jasmine.SpyObj<QuickBooks>;
+  let mocked: any;
+  let readFile: jasmine.Spy;
+  let writeFile: jasmine.Spy;
   let instance: IntuitClient;
 
   beforeEach(() => {
     spyOn(console, 'log');
     spyOn(console, 'error');
 
-    const readFile = spyOn(storageUtils, 'readFile');
+    readFile = spyOn(storageUtils, 'readFile');
     readFile.and.callFake((bucket: string, file: string) => {
       expect(bucket).toEqual(storageUtils.CONFIG_BUCKET);
       switch (file) {
@@ -26,13 +29,15 @@ describe('IntuitClient', () => {
         default: { return Promise.reject('not found'); }
       }
     });
-    spyOn(storageUtils, 'writeFile').and.returnValue(Promise.resolve());
+    writeFile =
+        spyOn(storageUtils, 'writeFile').and.returnValue(Promise.resolve());
 
     oAuthClient = spyOnClass(OAuthClient) as jasmine.SpyObj<OAuthClient>;
+    oAuthClient.token = {setToken: jasmine.createSpy()};
     oAuthClientConstructor = jasmine.createSpy().and.returnValue(oAuthClient);
     (oAuthClientConstructor as any).scopes = OAuthClient.scopes;
     mockQuickBooks = spyOnClass(QuickBooks);
-    const mocked = proxyquire.noCallThru().load('../src/intuit-client', {
+    mocked = proxyquire.noCallThru().load('../src/intuit-client', {
       'node-quickbooks': function() {
         return mockQuickBooks;
       },
@@ -51,16 +56,34 @@ describe('IntuitClient', () => {
     });
   });
 
-  it('creates token', async() => {
+  it('supports custom config file', async () => {
+    readFile.and.returnValue(Promise.resolve('{}'));
+    instance = new mocked.IntuitClient('test_config.json');
+    expect(readFile).toHaveBeenCalledWith(
+        storageUtils.CONFIG_BUCKET, 'test_config.json');
+  });
+
+  it('creates token', async () => {
     oAuthClient.createToken.and.returnValue(Promise.resolve({
       getJson: () => ({}),
     }));
     const result = await instance.fetchToken('abc/123');
     expect(oAuthClient.createToken).toHaveBeenCalledWith('abc/123');
+    expect(writeFile).toHaveBeenCalledWith(
+        storageUtils.CONFIG_BUCKET, 'test_token', '{}');
     expect(result).toBe('Success.');
   });
 
-  it('handles token creation error gracefully', async() => {
+  it('returns success on token creation even on failed save', async () => {
+    oAuthClient.createToken.and.returnValue(Promise.resolve({
+      getJson: () => ({}),
+    }));
+    writeFile.and.returnValue(Promise.reject('save failed'));
+    const result = await instance.fetchToken('abc/123');
+    expect(result).toBe('Success.');
+  });
+
+  it('handles token creation error gracefully', async () => {
     oAuthClient.createToken.and.returnValue(Promise.reject({
       error: 'No token for you.',
     }));
@@ -68,7 +91,7 @@ describe('IntuitClient', () => {
     expect(result).toBe('Failed to fetch token.');
   });
 
-  it('does not refresh when already authed', async() => {
+  it('does not refresh when already authed', async () => {
     oAuthClient.createToken.and.returnValue(Promise.resolve({
       getJson: () => ({}),
     }));
@@ -79,13 +102,13 @@ describe('IntuitClient', () => {
     expect(result).toBe(true);
   });
 
-  it('does not refresh when not authed', async() => {
+  it('does not refresh when not authed', async () => {
     const result = await instance.maybeRefreshToken();
     expect(oAuthClient.isAccessTokenValid).not.toHaveBeenCalled();
     expect(result).toBe(false);
   });
 
-  it('refreshes auth when expired', async() => {
+  it('refreshes auth when expired', async () => {
     oAuthClient.createToken.and.returnValue(Promise.resolve({
       getJson: () => ({}),
     }));
@@ -98,7 +121,7 @@ describe('IntuitClient', () => {
     expect(result).toBe(true);
   });
 
-  it('handles refresh errors', async() => {
+  it('handles refresh errors', async () => {
     oAuthClient.createToken.and.returnValue(Promise.resolve({
       getJson: () => ({}),
     }));
@@ -111,7 +134,25 @@ describe('IntuitClient', () => {
     expect(result).toBe(false);
   });
 
-  it('retrieves customers', async() => {
+  it('uses stored token', async () => {
+    const fakeToken = {token: 'asbc'};
+    readFile.and.callFake((_bucket: string, file: string) => {
+      switch (file) {
+        case 'intuit_config.prod.json': {
+          return Promise.resolve(JSON.stringify({tokenFile: 'test_token'}));
+        }
+        case 'test_token': {
+          return Promise.resolve(JSON.stringify(fakeToken));
+        }
+        default: { return Promise.reject('not found'); }
+      }
+    });
+    await instance.authorize();
+    expect(oAuthClient.authorizeUri).not.toHaveBeenCalled();
+    expect(oAuthClient.token.setToken).toHaveBeenCalledWith(fakeToken);
+  });
+
+  it('retrieves customers', async () => {
     const customerRef = {
       Id: 1234,
       GivenName: 'Anthony',
@@ -138,7 +179,7 @@ describe('IntuitClient', () => {
     });
   });
 
-  it('retrieves no customer if none found', async() => {
+  it('retrieves no customer if none found', async () => {
     oAuthClient.token = {access_token: '', realmId: ''};
     mockQuickBooks.findCustomers.and.callFake(
         (_req: any, callback: Function) => {
@@ -148,7 +189,7 @@ describe('IntuitClient', () => {
     expect(customer).toBe(null);
   });
 
-  it('creates customers', async() => {
+  it('creates customers', async () => {
     const customerRef = {
       GivenName: 'Anthony',
       FamilyName: 'Mays',
@@ -176,7 +217,7 @@ describe('IntuitClient', () => {
     });
   });
 
-  it('retrieves invoices', async() => {
+  it('retrieves invoices', async () => {
     mockQuickBooks.findInvoices.and.callFake((_: any, callback: any) => {
       callback(undefined, {
         QueryResponse: {
@@ -191,7 +232,7 @@ describe('IntuitClient', () => {
     });
   });
 
-  it('creates invoices', async() => {
+  it('creates invoices', async () => {
     mockQuickBooks.createInvoice.and.callFake((req: any, callback: any) => {
       expect(req).toEqual(jasmine.objectContaining({DocNumber: 7890}));
       callback(undefined, {DocNumber: 4567});
