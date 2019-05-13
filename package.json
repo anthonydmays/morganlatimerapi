@@ -10,7 +10,7 @@
     "fix": "git-clang-format",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "start": "node bin/server.js",
-    "start:local": "npm run build && node bin/server.js --intuitConfig=intuit_config.dev.json",
+    "start:local": "npm run build && node bin/server.js --intuitConfig=intuit_config..json",
     "test": "jasmine-ts --config=jasmine.json",
     "test:watch": "nodemon --ext ts --exec 'npm test'",
     "test:coverage": "nyc npm test"
