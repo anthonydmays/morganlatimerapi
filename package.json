@@ -62,7 +62,7 @@
     "express": "^4.17.1",
     "googleapis": "^27.0.0",
     "intuit-oauth": "^1.3.0",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.19",
     "node-quickbooks": "^2.0.32",
     "yargs": "^13.2.4"
   },
